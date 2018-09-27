@@ -30,9 +30,9 @@ process.load("VAJets.PKUCommon.leptonicW_cff")
 
 #for egamma smearing
 
-from EgammaAnalysis.EletronTools.regressionWeights_cfi import regressionWeights
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
 process = regressionWeights(process)
-process.load('EgammaAnalysis.EletronTools.regressionApplication_cff')
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
