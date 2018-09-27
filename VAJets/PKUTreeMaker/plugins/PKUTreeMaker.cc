@@ -453,7 +453,6 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("iphoton_f", &iphoton_f, "iphoton_f/I");
     outTree_->Branch("drla", &drla, "drla/D");
     outTree_->Branch("drla_f", &drla_f, "drla_f/D");
-    outTree_->Branch("pixelSeed", pixelSeed, "pixel[6]/O");
     //photon gen match
     //    outTree_->Branch("dR"    , &dR_, "dR/D");
     //    outTree_->Branch("ISRPho"        , &ISRPho       ,"ISRPho/O"       );
