@@ -193,7 +193,7 @@ private:
     int    iphoton;
     int    iphoton_f;
     double drla, drla_f;
-    bool   passEleVeto, passEleVetonew, passPixelSeedVeto;
+    bool   passEleVeto, passEleVetonew, passPixelSeedVeto, photonhaspixelseed, photonhaspixelseed_f;
     //Photon gen match
     int    isTrue_;
     bool   ISRPho;
@@ -433,6 +433,8 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("passEleVeto", &passEleVeto, "passEleVeto/O");
     outTree_->Branch("passEleVetonew", &passEleVetonew, "passEleVetonew/O");
     outTree_->Branch("passPixelSeedVeto", &passPixelSeedVeto, "passPixelSeedVeto/O");
+    outTree_->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspexelseed/O");
+    outTree_->Branch("photonhaspixelseed_f", &photonhaspixelseed_f, "photonhaspexelseed_f/O");
     outTree_->Branch("photonet", &photonet, "photonet/D");
     outTree_->Branch("photonet_f", &photonet_f, "photonet_f/D");
     outTree_->Branch("photoneta", &photoneta, "photoneta/D");
@@ -1379,7 +1381,8 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         Mla = (photonp4 + glepton).M();
         TLorentzVector wp4;
         wp4.SetPtEtaPhiE(WLeptonic.pt(), WLeptonic.eta(), WLeptonic.phi(), WLeptonic.energy());
-        Mva = (photonp4 + wp4).M();
+        Mva                = (photonp4 + wp4).M();
+        photonhaspixelseed = photon_ppsv[iphoton];
     }
 
     if (iphoton_f > -1 && iphoton_f < 6) {
@@ -1397,7 +1400,8 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         Mla_f = (photonp4_f + glepton).M();
         TLorentzVector wp4_f;
         wp4_f.SetPtEtaPhiE(WLeptonic.pt(), WLeptonic.eta(), WLeptonic.phi(), WLeptonic.energy());
-        Mva_f = (photonp4_f + wp4_f).M();
+        Mva_f                = (photonp4_f + wp4_f).M();
+        photonhaspixelseed_f = photon_ppsv[iphoton_f];
     }
 
     // ************************* AK4 Jets Information****************** //
@@ -1691,37 +1695,38 @@ void PKUTreeMaker::setDummyValues() {
         ak4jet_icsv[i]     = -1e1;
     }
 
-    photonet          = -1e1;
-    photonet_f        = -1e1;
-    photoneta         = -1e1;
-    photoneta_f       = -1e1;
-    photonphi         = -1e1;
-    photonphi_f       = -1e1;
-    photone           = -1e1;
-    photone_f         = -1e1;
-    photonsieie       = -1e1;
-    photonsieie_f     = -1e1;
-    photonphoiso      = -1e1;
-    photonphoiso_f    = -1e1;
-    photonchiso       = -1e1;
-    photonchiso_f     = -1e1;
-    photonnhiso       = -1e1;
-    photonnhiso_f     = -1e1;
-    iphoton           = -1;
-    iphoton_f         = -1;
-    drla              = 1e1;
-    drla_f            = 1e1;
-    passEleVeto       = false;
-    passEleVetonew    = false;
-    passPixelSeedVeto = false;
-
-    ISRPho        = false;
-    dR_           = 999;
-    dR1_          = 999;
-    isTrue_       = -1;
-    isprompt_     = -1;
-    ispromptLep_  = -1;
-    lepton_istrue = -1;
+    photonet             = -1e1;
+    photonet_f           = -1e1;
+    photoneta            = -1e1;
+    photoneta_f          = -1e1;
+    photonphi            = -1e1;
+    photonphi_f          = -1e1;
+    photone              = -1e1;
+    photone_f            = -1e1;
+    photonsieie          = -1e1;
+    photonsieie_f        = -1e1;
+    photonphoiso         = -1e1;
+    photonphoiso_f       = -1e1;
+    photonchiso          = -1e1;
+    photonchiso_f        = -1e1;
+    photonnhiso          = -1e1;
+    photonnhiso_f        = -1e1;
+    iphoton              = -1;
+    iphoton_f            = -1;
+    drla                 = 1e1;
+    drla_f               = 1e1;
+    passEleVeto          = false;
+    passEleVetonew       = false;
+    passPixelSeedVeto    = false;
+    photonhaspixelseed   = false;
+    photonhaspixelseed_f = false;
+    ISRPho               = false;
+    dR_                  = 999;
+    dR1_                 = 999;
+    isTrue_              = -1;
+    isprompt_            = -1;
+    ispromptLep_         = -1;
+    lepton_istrue        = -1;
 
     jet1pt     = -1e1;
     jet1pt_f   = -1e1;
