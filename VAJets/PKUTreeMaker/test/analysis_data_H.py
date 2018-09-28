@@ -155,88 +155,57 @@ process.treeDumper = cms.EDAnalyzer("PKUTreeMaker",
                                     RunOnMC=cms.bool(runOnMC),
                                     generator=cms.InputTag("generator"),
                                     #                                    lhe =  cms.InputTag("externalLHEProducer"),
-                                    pileup=cms.InputTag(
-                                        "slimmedAddPileupInfo"),
+                                    pileup=cms.InputTag("slimmedAddPileupInfo"),
                                     leptonicVSrc=cms.InputTag("leptonicV"),
                                     rho=cms.InputTag("fixedGridRhoFastjetAll"),
                                     ak4jetsSrc=cms.InputTag("cleanAK4Jets"),
                                     #                                    photonSrc = cms.InputTag("goodPhotons"),
                                     #photonSrc = cms.InputTag("slimmedPhotons"),
-                                    photonSrc=cms.InputTag(
-                                        "calibratedPatPhotons"),  # egamma smearing
+                                    photonSrc=cms.InputTag("calibratedPatPhotons"),  # egamma smearing
                                     genSrc=cms.InputTag("prunedGenParticles"),
-                                    jecAK4chsPayloadNames=cms.vstring(
-                                        jecLevelsAK4chs),
+                                    jecAK4chsPayloadNames=cms.vstring(jecLevelsAK4chs),
                                     jecAK4PayloadNames=cms.vstring(ak4jecsrc),
                                     metSrc=cms.InputTag("slimmedMETs"),
-                                    vertex=cms.InputTag(
-                                        "offlineSlimmedPrimaryVertices"),
+                                    vertex=cms.InputTag("offlineSlimmedPrimaryVertices"),
                                     t1jetSrc=cms.InputTag("slimmedJets"),
                                     t1muSrc=cms.InputTag("slimmedMuons"),
-                                    looseelectronSrc=cms.InputTag(
-                                        "vetoElectrons"),
+                                    looseelectronSrc=cms.InputTag("vetoElectrons"),
                                     #                                    electrons = cms.InputTag("slimmedElectrons"),
-                                    electrons=cms.InputTag(
-                                        "calibratedPatElectrons"),  # egamma smearing
-                                    conversions=cms.InputTag(
-                                        "reducedEgamma", "reducedConversions", reducedConversionsName),
-                                    beamSpot=cms.InputTag(
-                                        "offlineBeamSpot", "", "RECO"),
+                                    electrons=cms.InputTag("calibratedPatElectrons"),  # egamma smearing
+                                    conversions=cms.InputTag("reducedEgamma", "reducedConversions", reducedConversionsName),
+                                    beamSpot=cms.InputTag("offlineBeamSpot", "", "RECO"),
                                     # station2 retrieve, 2017/3/26
                                     # add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
                                     goodmuonSrc=cms.InputTag("goodMuons"),
                                     # retreive electron sigma_ieie for shape correction, add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
                                     goodeleSrc=cms.InputTag("goodElectrons"),
                                     loosemuonSrc=cms.InputTag("looseMuons"),
-                                    hltToken=cms.InputTag(
-                                        "TriggerResults", "", "HLT"),
-                                    elPaths1=cms.vstring(
-                                        "HLT_Ele23_WPTight_Gsf_v*"),
-                                    elPaths2=cms.vstring(
-                                        "HLT_Ele27_WPTight_Gsf_v*"),
-                                    muPaths1=cms.vstring(
-                                        "HLT_IsoMu20_v*", "HLT_IsoTkMu20_v*"),
+                                    hltToken=cms.InputTag("TriggerResults", "", "HLT"),
+                                    elPaths1=cms.vstring("HLT_Ele23_WPTight_Gsf_v*"),
+                                    elPaths2=cms.vstring("HLT_Ele27_WPTight_Gsf_v*"),
+                                    muPaths1=cms.vstring("HLT_IsoMu20_v*", "HLT_IsoTkMu20_v*"),
                                     #                                    muPaths2     = cms.vstring("HLT_IsoMu22_v*","HLT_IsoTkMu22_v*"),
-                                    muPaths2=cms.vstring(
-                                        "HLT_IsoMu24_v*", "HLT_IsoTkMu24_v*"),
-                                    muPaths3=cms.vstring(
-                                        "HLT_IsoMu27_v*", "HLT_IsoTkMu27_v*"),
-                                    noiseFilter=cms.InputTag(
-                                        'TriggerResults', '', hltFiltersProcessName),
-                                    noiseFilterSelection_HBHENoiseFilter=cms.string(
-                                        'Flag_HBHENoiseFilter'),
-                                    noiseFilterSelection_HBHENoiseIsoFilter=cms.string(
-                                        "Flag_HBHENoiseIsoFilter"),
-                                    noiseFilterSelection_globalTightHaloFilter=cms.string(
-                                        'Flag_globalTightHalo2016Filter'),
-                                    noiseFilterSelection_EcalDeadCellTriggerPrimitiveFilter=cms.string(
-                                        'Flag_EcalDeadCellTriggerPrimitiveFilter'),
-                                    noiseFilterSelection_goodVertices=cms.string(
-                                        'Flag_goodVertices'),
-                                    noiseFilterSelection_eeBadScFilter=cms.string(
-                                        'Flag_eeBadScFilter'),
-                                    noiseFilterSelection_badMuon=cms.InputTag(
-                                        'BadPFMuonFilter'),
-                                    noiseFilterSelection_badChargedHadron=cms.InputTag(
-                                        'BadChargedCandidateFilter'),
-
-                                    full5x5SigmaIEtaIEtaMap=cms.InputTag(
-                                        "photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
-                                    phoChargedIsolation=cms.InputTag(
-                                        "photonIDValueMapProducer:phoChargedIsolation"),
-                                    phoNeutralHadronIsolation=cms.InputTag(
-                                        "photonIDValueMapProducer:phoNeutralHadronIsolation"),
-                                    phoPhotonIsolation=cms.InputTag(
-                                        "photonIDValueMapProducer:phoPhotonIsolation"),
+                                    muPaths2=cms.vstring("HLT_IsoMu24_v*", "HLT_IsoTkMu24_v*"),
+                                    muPaths3=cms.vstring("HLT_IsoMu27_v*", "HLT_IsoTkMu27_v*"),
+                                    noiseFilter=cms.InputTag('TriggerResults', '', hltFiltersProcessName),
+                                    noiseFilterSelection_HBHENoiseFilter=cms.string('Flag_HBHENoiseFilter'),
+                                    noiseFilterSelection_HBHENoiseIsoFilter=cms.string("Flag_HBHENoiseIsoFilter"),
+                                    noiseFilterSelection_globalTightHaloFilter=cms.string('Flag_globalTightHalo2016Filter'),
+                                    noiseFilterSelection_EcalDeadCellTriggerPrimitiveFilter=cms.string('Flag_EcalDeadCellTriggerPrimitiveFilter'),
+                                    noiseFilterSelection_goodVertices=cms.string('Flag_goodVertices'),
+                                    noiseFilterSelection_eeBadScFilter=cms.string('Flag_eeBadScFilter'),
+                                    noiseFilterSelection_badMuon=cms.InputTag('BadPFMuonFilter'),
+                                    noiseFilterSelection_badChargedHadron=cms.InputTag('BadChargedCandidateFilter'),
+                                    full5x5SigmaIEtaIEtaMap=cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
+                                    phoChargedIsolation=cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
+                                    phoNeutralHadronIsolation=cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
+                                    phoPhotonIsolation=cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
                                     #                                    effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt"),
                                     #                                    effAreaNeuHadFile= cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt"),
                                     #                                    effAreaPhoFile   = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased.txt")
-                                    effAreaChHadFile=cms.FileInPath(
-                                        "RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
-                                    effAreaNeuHadFile=cms.FileInPath(
-                                        "RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
-                                    effAreaPhoFile=cms.FileInPath(
-                                        "RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt")
+                                    effAreaChHadFile=cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
+                                    effAreaNeuHadFile=cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
+                                    effAreaPhoFile=cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt")
                                     )
 
 
