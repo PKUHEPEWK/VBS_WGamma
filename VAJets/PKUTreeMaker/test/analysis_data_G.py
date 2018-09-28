@@ -61,9 +61,9 @@ process.calibratedPatPhotons.isMC = cms.bool(runOnMC)
 process.goodMuons.src = "slimmedMuons"
 #process.goodElectrons.src = "slimmedElectrons"
 #process.goodPhotons.src = "slimmedPhotons"
-process.goodElectrons.src = "calibratedPatElectrons" #egamma smearing
+process.goodElectrons.src = "calibratedPatElectrons"  # egamma smearing
 process.goodPhotons.src = "calibratedPatPhotons"
-process.Wtoenu.MET = "slimmedMETs" #egamma smearing
+process.Wtoenu.MET = "slimmedMETs"  # egamma smearing
 process.Wtomunu.MET = "slimmedMETs"
 
 process.load("VAJets.PKUCommon.goodJets_cff")
@@ -94,7 +94,7 @@ process.leptonicVFilter = cms.EDFilter("CandViewCountFilter",
 
 
 process.leptonSequence = cms.Sequence(process.muSequence +
-                                      process.regressionApplication * process.calibratedPatElectrons * process.calibratedPatPhotons +  #egamma smearing
+                                      process.regressionApplication * process.calibratedPatElectrons * process.calibratedPatPhotons +  # egamma smearing
                                       process.eleSequence +
                                       process.leptonicVSequence +
                                       process.leptonicVSelector +
@@ -163,7 +163,7 @@ process.treeDumper = cms.EDAnalyzer("PKUTreeMaker",
                                     #                                    photonSrc = cms.InputTag("goodPhotons"),
                                     # photonSrc=cms.InputTag("slimmedPhotons
                                     photonSrc=cms.InputTag(
-                                        "calibratedPatPhotons"), #egamma smearing
+                                        "calibratedPatPhotons"),  # egamma smearing
                                     genSrc=cms.InputTag("prunedGenParticles"),
                                     jecAK4chsPayloadNames=cms.vstring(
                                         jecLevelsAK4chs),
@@ -177,11 +177,16 @@ process.treeDumper = cms.EDAnalyzer("PKUTreeMaker",
                                         "vetoElectrons"),
                                     # electrons=cms.InputTag("slimmedElectrons"),
                                     electrons=cms.InputTag(
-                                        "calibratedPatElectrons"), #egamma smearing
+                                        "calibratedPatElectrons"),  # egamma smearing
                                     conversions=cms.InputTag(
                                         "reducedEgamma", "reducedConversions", reducedConversionsName),
                                     beamSpot=cms.InputTag(
                                         "offlineBeamSpot", "", "RECO"),
+                                    # station2 retrieve, 2017/3/26
+                                    # add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
+                                    goodmuonSrc=cms.InputTag("goodMuons"),
+                                    # retreive electron sigma_ieie for shape correction, add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
+                                    goodeleSrc=cms.InputTag("goodElectrons"),
                                     loosemuonSrc=cms.InputTag("looseMuons"),
                                     hltToken=cms.InputTag(
                                         "TriggerResults", "", "HLT"),
