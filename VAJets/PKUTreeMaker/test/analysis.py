@@ -182,8 +182,10 @@ process.treeDumper = cms.EDAnalyzer("PKUTreeMaker",
                                     beamSpot=cms.InputTag(
                                         "offlineBeamSpot", "", "RECO"),
                                     # station2 retrieve, 2017/3/26
-                                    goodmuonSrc=cms.InputTag("goodMuons"), # add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
-                                    goodeleSrc=cms.InputTag("goodElectrons"),# retreive electron sigma_ieie for shape correction, add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
+                                    # add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
+                                    goodmuonSrc=cms.InputTag("goodMuons"),
+                                    # retreive electron sigma_ieie for shape correction, add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
+                                    goodeleSrc=cms.InputTag("goodElectrons"),
                                     loosemuonSrc=cms.InputTag("looseMuons"),
                                     hltToken=cms.InputTag(
                                         "TriggerResults", "", "HLT"),
