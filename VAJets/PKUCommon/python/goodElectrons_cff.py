@@ -12,7 +12,7 @@ vetoEleIdLabel = "veto"
 goodElectrons = cms.EDProducer("PATElectronIdSelector",
                                src=cms.InputTag("slimmedElectrons"),
                                vertex=cms.InputTag("offlineSlimmedPrimaryVertices"),
-                               idLabel=cms.string(tightEleIdLabel),
+                               idLabel=cms.string(mediumEleIdLabel), #previous is tightEleIdLabel
                                rho=cms.InputTag("fixedGridRhoFastjetAll"),
                                effAreasConfigFile=cms.FileInPath("RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_80X.txt"))
 

@@ -50,11 +50,13 @@
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "Math/VectorUtil.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "TMath.h"
 #include <TFormula.h>
 
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 struct sortPt {
     bool operator()(TLorentzVector* s1, TLorentzVector* s2) const {
         return s1->Pt() >= s2->Pt();
@@ -97,6 +99,7 @@ private:
     void findFirstNonPhotonMother(const reco::Candidate* particle,
                                   int& ancestorPID, int& ancestorStatus);
     // for muon rochester correction
+    double                                     ele1_sigmaieie;
     int                                        lep1_sign;
     edm::EDGetTokenT<edm::View<pat::Muon>>     goodmuonToken_;
     edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
@@ -521,6 +524,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("ptlep1", &ptlep1, "ptlep1/D");
     outTree_->Branch("etalep1", &etalep1, "etalep1/D");
     outTree_->Branch("philep1", &philep1, "philep1/D");
+    outTree_->Branch("ele1_sigmaieie", &ele1_sigmaieie, "ele1_sigmaieie/D");
     outTree_->Branch("j1metPhi", &j1metPhi, "j1metPhi/D");
     outTree_->Branch("j1metPhi_f", &j1metPhi_f, "j1metPhi_f/D");
     outTree_->Branch("j2metPhi", &j2metPhi, "j2metPhi/D");
@@ -1056,8 +1060,10 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     edm::Handle<edm::View<pat::Muon>> loosemus;
     iEvent.getByToken(loosemuonToken_, loosemus);
-    edm::Handle<edm::View<pat::Muon>> goodmus;   // rochester correction
-    iEvent.getByToken(goodmuonToken_, goodmus);  // rochester correction
+    edm::Handle<edm::View<pat::Muon>> goodmus;       // rochester correction
+    iEvent.getByToken(goodmuonToken_, goodmus);      // rochester correction
+    edm::Handle<edm::View<pat::Electron>> goodeles;  // retreive electron's sigma_ieie for shape correction
+    iEvent.getByToken(goodeleToken_, goodeles);      // retreive electron's sigma_ieie for shape correction
     edm::Handle<edm::View<pat::Electron>> looseeles;
     iEvent.getByToken(looseelectronToken_, looseeles);
     edm::Handle<edm::View<reco::Candidate>> metHandle;
@@ -1166,9 +1172,14 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     phiVlep             = leptonicV.phi();
     massVlep            = leptonicV.mass();
     mtVlep              = leptonicV.mt();
-    ptlep1              = leptonicV.daughter(1)->pt();
-    etalep1             = leptonicV.daughter(1)->eta();
-    philep1             = leptonicV.daughter(1)->phi();
+    // retreive electron's sigma_ieie for shape correction
+    if (goodeles->size() > 1) {
+        ele1_sigmaieie = (*goodeles)[0].full5x5_sigmaIetaIeta();
+        //	std::cout<<(*goodeles)[0].pt()<<" "<<leptonicV.daughter(0)->pt()<<std::endl;
+    }
+    ptlep1  = leptonicV.daughter(0)->pt();   //privious use daughter(1)
+    etalep1 = leptonicV.daughter(0)->eta();  //privious use daughter(1)
+    philep1 = leptonicV.daughter(0)->phi();  //privious use daughter(1)
     // for muon rochester correction
     if (goodmus->size() > 1) {
         lep1_sign           = leptonicV.daughter(0)->pdgId();
@@ -1634,6 +1645,7 @@ void PKUTreeMaker::setDummyValues() {
     lep1_sign           = -1e2;
     muon1_trackerLayers = -1e1;
     matchedgenMu1_pt    = -1e2;
+    ele1_sigmaieie      = -99.;
     // for muon rochester correction
     met          = -1e1;
     metPhi       = -1e1;
