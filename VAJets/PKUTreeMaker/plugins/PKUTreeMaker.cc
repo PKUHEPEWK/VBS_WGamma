@@ -50,12 +50,18 @@
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "Math/VectorUtil.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "TMath.h"
 #include <TFormula.h>
 
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/JetReco/interface/GenJet.h"
+#include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "TrackingTools/Records/interface/TrackingComponentsRecord.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
 
 struct sortPt {
     bool operator()(TLorentzVector* s1, TLorentzVector* s2) const {
@@ -99,7 +105,7 @@ private:
     void findFirstNonPhotonMother(const reco::Candidate* particle,
                                   int& ancestorPID, int& ancestorStatus);
     // for muon rochester correction
-    double                                     ele1_sigmaieie;
+    //double                                     ele1_sigmaieie;
     int                                        lep1_sign;
     edm::EDGetTokenT<edm::View<pat::Muon>>     goodmuonToken_;
     edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
@@ -401,14 +407,12 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("Mva_f", &Mva_f, "Mva_f/D");
     outTree_->Branch("nlooseeles", &nlooseeles, "nlooseeles/I");
     outTree_->Branch("nloosemus", &nloosemus, "nloosemus/I");
-    outTree_->Branch("ngoodmus", &ngoodmus, "ngoodmus/I");
     outTree_->Branch("genphoton_pt", genphoton_pt, "genphoton_pt[6]/D");
     outTree_->Branch("genphoton_eta", genphoton_eta, "genphoton_eta[6]/D");
     outTree_->Branch("genphoton_phi", genphoton_phi, "genphoton_phi[6]/D");
     outTree_->Branch("genmuon_pt", genmuon_pt, "genmuon_pt[6]/D");
     outTree_->Branch("genmuon_eta", genmuon_eta, "genmuon_eta[6]/D");
     outTree_->Branch("genmuon_phi", genmuon_phi, "genmuon_phi[6]/D");
-    outTree_->Branch("genmuon_pid", genmuon_pid, "genmuon_pid[6]/I");
     outTree_->Branch("genelectron_pt", genelectron_pt, "genelectron_pt[6]/D");
     outTree_->Branch("genelectron_eta", genelectron_eta, "genelectron_eta[6]/D");
     outTree_->Branch("genelectron_phi", genelectron_phi, "genelectron_phi[6]/D");
@@ -524,7 +528,6 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("ptlep1", &ptlep1, "ptlep1/D");
     outTree_->Branch("etalep1", &etalep1, "etalep1/D");
     outTree_->Branch("philep1", &philep1, "philep1/D");
-    outTree_->Branch("ele1_sigmaieie", &ele1_sigmaieie, "ele1_sigmaieie/D");
     outTree_->Branch("j1metPhi", &j1metPhi, "j1metPhi/D");
     outTree_->Branch("j1metPhi_f", &j1metPhi_f, "j1metPhi_f/D");
     outTree_->Branch("j2metPhi", &j2metPhi, "j2metPhi/D");
@@ -561,6 +564,9 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("lumiWeight", &lumiWeight, "lumiWeight/D");
     outTree_->Branch("pileupWeight", &pileupWeight, "pileupWeight/D");
     //for muon rochester correction
+    outTree_->Branch("ngoodmus", &ngoodmus, "ngoodmus/I");
+    outTree_->Branch("genmuon_pid", genmuon_pid, "genmuon_pid[6]/I");
+    //outTree_->Branch("ele1_sigmaieie", &ele1_sigmaieie, "ele1_sigmaieie/D");
     outTree_->Branch("lep1_sign", &lep1_sign, "lep1_sign/I");
     outTree_->Branch("muon1_trackerLayers", &muon1_trackerLayers, "muon1_trackerLayers/I");
     outTree_->Branch("matchedgenMu1_pt", &matchedgenMu1_pt, "matchedgenMu1_pt/D");
@@ -870,8 +876,10 @@ int PKUTreeMaker::matchToTruth(const reco::Photon&                              
 
     isprompt                        = ((*genParticles)[im].isPromptFinalState() || (*genParticles)[im].isDirectPromptTauDecayProductFinalState());
     const reco::Candidate* particle = &(*genParticles)[im];
-    if (abs(particle->pdgId()) == 11)
-        isprompt = 0;
+    if (abs(particle->pdgId()) == 22 && isprompt)
+        isprompt = 2;
+    if (abs(particle->pdgId()) == 11 && isprompt)
+        isprompt = 3;
 
     // Find ID of the parent of the found generator level photon match
     int ancestorPID    = -999;
@@ -887,8 +895,6 @@ int PKUTreeMaker::matchToTruth(const reco::Photon&                              
             return MATCHED_FROM_PI0;
         // ISRPho =true;
         else
-            //      std::cout<<"Mother = "<<abs(ancestorPID)<<" "<<closestPhoton->mother(0)->pdgId()<<" "<<closestPhoton->mother(0)->status()<<std::endl;
-            //      std::cout<<"Run="<<run<<" Event="<<nevent<<" lumi="<<ls<<std::endl;
             return MATCHED_FROM_OTHER_SOURCES;
         //  ISRPho =true;
     }
@@ -1172,14 +1178,9 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     phiVlep             = leptonicV.phi();
     massVlep            = leptonicV.mass();
     mtVlep              = leptonicV.mt();
-    // retreive electron's sigma_ieie for shape correction
-    if (goodeles->size() > 1) {
-        ele1_sigmaieie = (*goodeles)[0].full5x5_sigmaIetaIeta();
-        //	std::cout<<(*goodeles)[0].pt()<<" "<<leptonicV.daughter(0)->pt()<<std::endl;
-    }
-    ptlep1  = leptonicV.daughter(0)->pt();   //privious use daughter(1)
-    etalep1 = leptonicV.daughter(0)->eta();  //privious use daughter(1)
-    philep1 = leptonicV.daughter(0)->phi();  //privious use daughter(1)
+    ptlep1              = leptonicV.daughter(1)->pt();   //privious use daughter(1)
+    etalep1             = leptonicV.daughter(1)->eta();  //privious use daughter(1)
+    philep1             = leptonicV.daughter(1)->phi();  //privious use daughter(1)
     // for muon rochester correction
     if (goodmus->size() > 1) {
         lep1_sign           = leptonicV.daughter(0)->pdgId();
@@ -1202,6 +1203,9 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     }
     //	std::cout<<"matchedgenMu1_pt "<<matchedgenMu1_pt<<std::endl;
     // for muon rochester correction
+    ptlep1            = leptonicV.daughter(1)->pt();
+    etalep1           = leptonicV.daughter(1)->eta();
+    philep1           = leptonicV.daughter(1)->phi();
     double energylep1 = leptonicV.daughter(1)->energy();
     if (leptonicV.daughter(0)->isElectron() || leptonicV.daughter(0)->isMuon()) {
         ptlep1     = leptonicV.daughter(0)->pt();
@@ -1214,7 +1218,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     mtVlepnew  = sqrt(2 * ptlep1 * met * (1.0 - cos(philep1 - metPhi)));
     nlooseeles = looseeles->size();
     nloosemus  = loosemus->size();
-
+    //ngoodmus   = goodmus->size();
     TLorentzVector glepton;
     glepton.SetPtEtaPhiE(ptlep1, etalep1, philep1, energylep1);
     math::XYZTLorentzVector     neutrinoP4 = getNeutrinoP4(MET_et, MET_phi, glepton, 1);
@@ -1339,17 +1343,6 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 iphoton  = ip;
             }
         }
-        //////////////////////////////////for fake photon study, store photon without sieie cut
-        //Inverting loose ID
-        //            if(passEleVetonew && (*photons)[ip].isEB() && (*photons)[ip].hadTowOverEm()<5*0.0597 && chiso<10 && nhiso<std::min(0.2*(*photons)[ip].pt(), 5.*(10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())))  && phoiso<std::min(0.2*(*photons)[ip].pt(), 5.*(3.630+0.0047*(*photons)[ip].pt())) && !(photon_sieie[ip]<0.01031 && chiso<4)) {ismedium_photon_f=1;}  // && nhiso<(10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(3.630+0.0047*(*photons)[ip].pt())
-        //            if(passEleVetonew && (*photons)[ip].isEE() && (*photons)[ip].hadTowOverEm()<5*0.0481 && chiso<10 && nhiso<std::min(0.2*(*photons)[ip].pt(), 5.*(5.931 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt())))  && phoiso<std::min(0.2*(*photons)[ip].pt(), 5.*(6.641+0.0034*(*photons)[ip].pt())) && !(photon_sieie[ip]<0.03013 && chiso<4)) {ismedium_photon_f=1;}  // && nhiso<(5.931 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(6.641+0.0034*(*photons)[ip].pt())
-
-        //            if(passEleVetonew && phosc_eta<1.4442 && (*photons)[ip].hadTowOverEm()<0.0597 && chiso<10 && nhiso<std::min(0.2*(*photons)[ip].pt(), (10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())))  && phoiso<std::min(0.2*(*photons)[ip].pt(), (3.630+0.0047*(*photons)[ip].pt())) && !(photon_sieie[ip]<0.01031 && chiso<4)) {ismedium_photon_f=1;}
-        //            if(passEleVetonew && phosc_eta>1.566 && phosc_eta<2.5 && (*photons)[ip].hadTowOverEm()<0.0481 && chiso<10 && nhiso<std::min(0.2*(*photons)[ip].pt(), (5.931 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt())))  && phoiso<std::min(0.2*(*photons)[ip].pt(), (6.641+0.0034*(*photons)[ip].pt())) && !(photon_sieie[ip]<0.03013 && chiso<4)) {ismedium_photon_f=1;}
-
-        //            if(passEleVetonew && phosc_eta<1.4442 && (*photons)[ip].hadTowOverEm()<0.0396 && chiso<10 && nhiso<(2.725 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt()))  && phoiso<(2.571+0.0047*(*photons)[ip].pt()) && !(photon_sieie[ip]<0.01022 && chiso<4)) {ismedium_photon_f=1;}
-        //            if(passEleVetonew && phosc_eta>1.566 && phosc_eta<2.5 && (*photons)[ip].hadTowOverEm()<0.0219 && chiso<10 && nhiso<(1.715 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt()))  && phoiso<(3.863+0.0034*(*photons)[ip].pt()) && !(photon_sieie[ip]<0.03001 && chiso<4)) {ismedium_photon_f=1;}
-
         if (passEleVetonew && phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0597 && chiso < 15 && (nhiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (10.910 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt()))) || phoiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (3.630 + 0.0047 * (*photons)[ip].pt())) || !(photon_sieie[ip] < 0.01031 && chiso < 4))) {
             ismedium_photon_f = 1;
         }  // && nhiso<(10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(3.630+0.0047*(*photons)[ip].pt())
@@ -1645,7 +1638,8 @@ void PKUTreeMaker::setDummyValues() {
     lep1_sign           = -1e2;
     muon1_trackerLayers = -1e1;
     matchedgenMu1_pt    = -1e2;
-    ele1_sigmaieie      = -99.;
+    //ele1_sigmaieie      = -99.;
+    //ngoodmus      = -1e1;
     // for muon rochester correction
     met          = -1e1;
     metPhi       = -1e1;
