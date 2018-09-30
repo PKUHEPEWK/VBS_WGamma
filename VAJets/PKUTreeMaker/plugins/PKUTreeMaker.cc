@@ -106,9 +106,9 @@ private:
                                   int& ancestorPID, int& ancestorStatus);
     // for muon rochester correction
     //double                                     ele1_sigmaieie;
-    int                                        lep1_sign;
-    edm::EDGetTokenT<edm::View<pat::Muon>>     goodmuonToken_;
-    edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
+    int                                    lep1_sign;
+    edm::EDGetTokenT<edm::View<pat::Muon>> goodmuonToken_;
+    //edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
     // for muon rochester correction
     float                                             EAch(float x);
     float                                             EAnh(float x);
@@ -357,9 +357,9 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     looseelectronToken_ = (consumes<edm::View<pat::Electron>>(iConfig.getParameter<edm::InputTag>("looseelectronSrc")));
     loosemuonToken_     = (consumes<edm::View<pat::Muon>>(iConfig.getParameter<edm::InputTag>("loosemuonSrc")));
     goodmuonToken_      = (consumes<edm::View<pat::Muon>>(iConfig.getParameter<edm::InputTag>("goodmuonSrc")));
-    goodeleToken_       = (consumes<edm::View<pat::Electron>>(iConfig.getParameter<edm::InputTag>("goodeleSrc")));
-    beamSpotToken_      = (consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot")));
-    conversionsToken_   = (consumes<std::vector<reco::Conversion>>(iConfig.getParameter<edm::InputTag>("conversions")));
+    //goodeleToken_       = (consumes<edm::View<pat::Electron>>(iConfig.getParameter<edm::InputTag>("goodeleSrc")));
+    beamSpotToken_    = (consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot")));
+    conversionsToken_ = (consumes<std::vector<reco::Conversion>>(iConfig.getParameter<edm::InputTag>("conversions")));
 
     jetCorrLabel_ = jecAK4chsLabels_;
     offsetCorrLabel_.push_back(jetCorrLabel_[0]);
@@ -1066,10 +1066,10 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     edm::Handle<edm::View<pat::Muon>> loosemus;
     iEvent.getByToken(loosemuonToken_, loosemus);
-    edm::Handle<edm::View<pat::Muon>> goodmus;       // rochester correction
-    iEvent.getByToken(goodmuonToken_, goodmus);      // rochester correction
-    edm::Handle<edm::View<pat::Electron>> goodeles;  // retreive electron's sigma_ieie for shape correction
-    iEvent.getByToken(goodeleToken_, goodeles);      // retreive electron's sigma_ieie for shape correction
+    edm::Handle<edm::View<pat::Muon>> goodmus;   // rochester correction
+    iEvent.getByToken(goodmuonToken_, goodmus);  // rochester correction
+    //edm::Handle<edm::View<pat::Electron>> goodeles;  // retreive electron's sigma_ieie for shape correction
+    //iEvent.getByToken(goodeleToken_, goodeles);      // retreive electron's sigma_ieie for shape correction
     edm::Handle<edm::View<pat::Electron>> looseeles;
     iEvent.getByToken(looseelectronToken_, looseeles);
     edm::Handle<edm::View<reco::Candidate>> metHandle;
@@ -1218,7 +1218,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     mtVlepnew  = sqrt(2 * ptlep1 * met * (1.0 - cos(philep1 - metPhi)));
     nlooseeles = looseeles->size();
     nloosemus  = loosemus->size();
-    //ngoodmus   = goodmus->size();
+    ngoodmus   = goodmus->size();
     TLorentzVector glepton;
     glepton.SetPtEtaPhiE(ptlep1, etalep1, philep1, energylep1);
     math::XYZTLorentzVector     neutrinoP4 = getNeutrinoP4(MET_et, MET_phi, glepton, 1);
@@ -1639,7 +1639,7 @@ void PKUTreeMaker::setDummyValues() {
     muon1_trackerLayers = -1e1;
     matchedgenMu1_pt    = -1e2;
     //ele1_sigmaieie      = -99.;
-    //ngoodmus      = -1e1;
+    ngoodmus = -1e1;
     // for muon rochester correction
     met          = -1e1;
     metPhi       = -1e1;
