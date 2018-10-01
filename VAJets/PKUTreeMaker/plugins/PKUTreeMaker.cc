@@ -106,9 +106,9 @@ private:
                                   int& ancestorPID, int& ancestorStatus);
     //  muon station2 retrieve, L1 issue, Meng 2017/3/26, for muon rochester correction
     //double                                     ele1_sigmaieie;
-    int                                        lep1_sign;
-    edm::EDGetTokenT<edm::View<pat::Muon>>     goodmuonToken_;
-    edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
+    int                                    lep1_sign;
+    edm::EDGetTokenT<edm::View<pat::Muon>> goodmuonToken_;
+    //edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
     //muon station2 retrieve, L1 issue, Meng 2017/3/26, for muon rochester correction
     float                                             EAch(float x);
     float                                             EAnh(float x);
