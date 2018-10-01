@@ -2,11 +2,11 @@ import FWCore.ParameterSet.Config as cms
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
 
 goodAK4Jets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
-                           filterParams=pfJetIDSelector.clone(),
-                           src=cms.InputTag("slimmedJets")
-                           )
+                        filterParams = pfJetIDSelector.clone(),
+                        src = cms.InputTag("slimmedJets")
+                        )
 
-# Cleaning
+### Cleaning
 # We want to make sure that the jets are not the electrons or muons done previously
 
 import PhysicsTools.PatAlgos.cleaningLayer1.jetCleaner_cfi as jetCleaner_cfi
@@ -25,4 +25,6 @@ cleanAK4Jets.checkOverlaps.tkIsoElectrons = cms.PSet()
 cleanAK4Jets.finalCut = "pt > 20 && abs(eta) < 4.7"
 
 
-NJetsSequence = cms.Sequence(goodAK4Jets + cleanAK4Jets)
+
+
+NJetsSequence = cms.Sequence(goodAK4Jets + cleanAK4Jets )

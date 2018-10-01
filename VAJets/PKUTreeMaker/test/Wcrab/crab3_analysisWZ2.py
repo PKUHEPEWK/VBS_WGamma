@@ -2,14 +2,14 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_("General")
 #config.General.requestName   = 'WZ-1'
-config.General.requestName = 'WZ-2'
+config.General.requestName   = 'WZ-2'
 config.General.transferLogs = True
 
 config.section_("JobType")
-config.JobType.pluginName = 'Analysis'
-config.JobType.inputFiles = ['Summer16_23Sep2016V4_MC_L1FastJet_AK4PFchs.txt', 'Summer16_23Sep2016V4_MC_L2Relative_AK4PFchs.txt', 'Summer16_23Sep2016V4_MC_L3Absolute_AK4PFchs.txt', 'Summer16_23Sep2016V4_MC_L1FastJet_AK4PFPuppi.txt', 'Summer16_23Sep2016V4_MC_L2Relative_AK4PFPuppi.txt', 'Summer16_23Sep2016V4_MC_L3Absolute_AK4PFPuppi.txt']
+config.JobType.pluginName  = 'Analysis'
+config.JobType.inputFiles = ['Summer16_23Sep2016V4_MC_L1FastJet_AK4PFchs.txt','Summer16_23Sep2016V4_MC_L2Relative_AK4PFchs.txt','Summer16_23Sep2016V4_MC_L3Absolute_AK4PFchs.txt','Summer16_23Sep2016V4_MC_L1FastJet_AK4PFPuppi.txt','Summer16_23Sep2016V4_MC_L2Relative_AK4PFPuppi.txt','Summer16_23Sep2016V4_MC_L3Absolute_AK4PFPuppi.txt']
 # Name of the CMSSW configuration file
-config.JobType.psetName = 'analysis.py'
+config.JobType.psetName    = 'analysis.py'
 config.JobType.allowUndistributedCMSSW = True
 
 config.section_("Data")
@@ -24,4 +24,7 @@ config.Data.publication = False
 config.Data.outputDatasetTag = 'WZ-2'
 
 config.section_("Site")
-config.Site.storageSite = 'T3_US_FNALLPC'  # 2_CH_CERN'
+config.Site.storageSite = 'T3_US_FNALLPC'  #2_CH_CERN'
+
+
+
