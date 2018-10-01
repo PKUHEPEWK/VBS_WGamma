@@ -104,12 +104,12 @@ private:
 
     void findFirstNonPhotonMother(const reco::Candidate* particle,
                                   int& ancestorPID, int& ancestorStatus);
-    // for muon rochester correction
+    //  muon station2 retrieve, L1 issue, Meng 2017/3/26, for muon rochester correction
     //double                                     ele1_sigmaieie;
-    int                                    lep1_sign;
-    edm::EDGetTokenT<edm::View<pat::Muon>> goodmuonToken_;
-    //edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
-    // for muon rochester correction
+    int                                        lep1_sign;
+    edm::EDGetTokenT<edm::View<pat::Muon>>     goodmuonToken_;
+    edm::EDGetTokenT<edm::View<pat::Electron>> goodeleToken_;
+    //muon station2 retrieve, L1 issue, Meng 2017/3/26, for muon rochester correction
     float                                             EAch(float x);
     float                                             EAnh(float x);
     float                                             EApho(float x);
@@ -1181,6 +1181,11 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     ptlep1              = leptonicV.daughter(1)->pt();   //privious use daughter(1)
     etalep1             = leptonicV.daughter(1)->eta();  //privious use daughter(1)
     philep1             = leptonicV.daughter(1)->phi();  //privious use daughter(1)
+    // retreive electron's sigma_ieie for shape correction
+    /*if (goodeles->size() > 1) {
+        ele1_sigmaieie = (*goodeles)[0].full5x5_sigmaIetaIeta();
+        //	std::cout<<(*goodeles)[0].pt()<<" "<<leptonicV.daughter(0)->pt()<<std::endl;
+    }*/
     // for muon rochester correction
     if (goodmus->size() > 1) {
         lep1_sign           = leptonicV.daughter(0)->pdgId();
