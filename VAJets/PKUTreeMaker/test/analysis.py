@@ -215,7 +215,7 @@ process.load(
     "VAJets.PKUCommon.data.RSGravitonToWW_kMpl01_M_1000_Tune4C_13TeV_pythia8")
 process.source.fileNames = [
     # "/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/04E807A8-9EBE-E611-ABE7-FA163EC9F0BF.root"
-    "file:/uscms_data/d3/qliphy/jie/modifyNtuple/CMSSW_8_0_26_patch1/src/VAJets/PKUTreeMaker/test/wa.root"
+    "/store/mc/RunIISummer16MiniAODv2/WGToLNuG_01J_5f_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/FC332430-9C04-E811-8B94-008CFA1983BC.root"
 ]
 
 process.maxEvents.input = 10
