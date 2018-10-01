@@ -15,4 +15,4 @@ Steps
 - mkdir -p ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/
 - git clone git@github.com:cms-data/RecoEgamma-ElectronIdentification ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/data
 - svn checkout https://github.com/PKUHEPEWK/VBS_WGamma/trunk/VAJets
-- scram b -j9
+- scram b -j 32
