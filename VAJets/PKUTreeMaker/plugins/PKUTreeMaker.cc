@@ -1272,11 +1272,11 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         double phosc_eta = pho->superCluster()->eta();
         //            std::cout<<pho->superCluster()->eta()<<" "<<(*photons)[ip].eta()<<std::endl;
         double phosc_phi = pho->superCluster()->phi();
-        double pho_ieie  = (*full5x5SigmaIEtaIEtaMap)[pho];
+        double pho_ieie  = (*photons)[ip].full5x5_sigmaIetaIeta();  // (*full5x5SigmaIEtaIEtaMap)[pho];
         //            std::cout<<(*full5x5SigmaIEtaIEtaMap)[ pho ]<<" "<<(*photons)[ip].sigmaIetaIeta()<<std::endl;
-        double chIso1 = (*phoChargedIsolationMap)[pho];
-        double nhIso1 = (*phoNeutralHadronIsolationMap)[pho];
-        double phIso1 = (*phoPhotonIsolationMap)[pho];
+        double chIso1 = (*photons)[ip].chargedHadronIso();  //(*phoChargedIsolationMap)[pho];
+        double nhIso1 = (*photons)[ip].neutralHadronIso();  //(*phoNeutralHadronIsolationMap)[pho];
+        double phIso1 = (*photons)[ip].photonIso();         //(*phoPhotonIsolationMap)[pho];
         /*
             double chiso=std::max(0.0, chIso1 - rhoVal_*EAch(fabs((*photons)[ip].eta()))); //effAreaChHadrons_.getEffectiveArea(fabs(phosc_eta)));
 //            double chiso=std::max((*photons)[ip].chargedHadronIso()-rhoVal_*EAch(fabs((*photons)[ip].eta())),0.0);
@@ -1285,7 +1285,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             double phoiso=std::max(0.0, phIso1 - rhoVal_*EApho(fabs((*photons)[ip].eta()))); //effAreaPhotons_.getEffectiveArea(fabs(phosc_eta)));
 //            double phoiso=std::max((*photons)[ip].photonIso()-rhoVal_*EApho(fabs((*photons)[ip].eta())),0.0);
 */
-        double chiso  = std::max(0.0, chIso1 - rhoVal_ * EAch(fabs(phosc_eta)));
+        double chiso  = std::max(0.0, chIso1 - rhoVal_ * EAch(fabs(phosc_eta /*fabs(phosc_eta)*/)));
         double nhiso  = std::max(0.0, nhIso1 - rhoVal_ * EAnh(fabs(phosc_eta)));
         double phoiso = std::max(0.0, phIso1 - rhoVal_ * EApho(fabs(phosc_eta)));
 
