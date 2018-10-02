@@ -178,7 +178,7 @@ process.treeDumper = cms.EDAnalyzer("PKUTreeMaker",
                                     # add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
                                     goodmuonSrc=cms.InputTag("goodMuons"),
                                     # retreive electron sigma_ieie for shape correction, add when modify code for egamma smearing and rochester correction, in order to pass the Configuration
-                                    goodeleSrc=cms.InputTag("goodElectrons"),
+                                    #goodeleSrc=cms.InputTag("goodElectrons"),
                                     loosemuonSrc=cms.InputTag("looseMuons"),
                                     hltToken=cms.InputTag("TriggerResults", "", "HLT"),
                                     elPaths1=cms.vstring("HLT_Ele23_WPTight_Gsf_v*"),

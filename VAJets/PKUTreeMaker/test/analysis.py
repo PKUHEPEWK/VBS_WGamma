@@ -8,9 +8,6 @@ runOnMC = True
 chsorpuppi = True  # AK4Chs or AK4Puppi
 #****************************************************************************************************#
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
-#process.load("Configuration.StandardSequences.MagneticField_38T_cff")
-#process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi")
-#process.load("RecoTracker.CkfPattern.CkfTrackCandidates_cff")
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 if runOnMC:
@@ -60,8 +57,8 @@ process.goodMuons.src = "slimmedMuons"
 #process.goodPhotons.src = "slimmedPhotons"
 process.goodElectrons.src = "calibratedPatElectrons"  # egamma smearing
 process.goodPhotons.src = "calibratedPatPhotons"  # egamma smearing
-#process.Wtoenu.MET = "slimmedMETs"
-#process.Wtomunu.MET = "slimmedMETs"
+process.Wtoenu.MET = "slimmedMETs"
+process.Wtomunu.MET = "slimmedMETs"
 
 process.load("VAJets.PKUCommon.goodJets_cff")
 if chsorpuppi:
