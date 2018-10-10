@@ -1,6 +1,7 @@
 #define makesmall_cxx
 #include "makesmall.h"
 
+using namespace std;
 void makesmall::Loop() {
     //   In a ROOT session, you can do:
     //      root> .L makesmall.C
