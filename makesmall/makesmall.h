@@ -20,6 +20,8 @@ using namespace std;
 
 class makesmall {
 private:
+    TFile* fout;
+    TTree* ExTree;
     double scalef;
     double scale_btag_up;
     double scale_btag_down;
@@ -390,7 +392,7 @@ public:
     //for muon rochester correction
 
     TString m_dataset;
-    makesmall(TTree* tree = 0, TString dataset = "", TFile* fout, TTree* ExTree);
+    makesmall(TTree* tree = 0, TString dataset = "");
     virtual ~makesmall();
     virtual Int_t    Cut(Long64_t entry);
     virtual Int_t    GetEntry(Long64_t entry);
@@ -419,7 +421,7 @@ public:
 #endif
 
 #ifdef makesmall_cxx
-makesmall::makesmall(TTree* tree, TString dataset, TFile* fout, TTree* ExTree)
+makesmall::makesmall(TTree* tree, TString dataset)
     : fChain(0) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
@@ -433,6 +435,8 @@ makesmall::makesmall(TTree* tree, TString dataset, TFile* fout, TTree* ExTree)
     }
     // Jie
     m_dataset = dataset;
+    fout      = TFile::Open(m_dataset, "RECREATE");
+    ExTree    = new TTree("demo", "demo");
     if (m_dataset.Contains("fakephoton")) {
         use_f = true;
     }
