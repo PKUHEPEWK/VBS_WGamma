@@ -2,7 +2,7 @@
 int main(int argc, char* argv[]) {
     //gROOT->LoadMacro("xx.C");
     //TString dir = "root://cmseos.fnal.gov//eos/uscms/store/user/qliphy/jie/ori/";
-    TString dir        = "/eos/uscms/store/user/qliphy/";
+    TString dir        = "/eos/uscms/store/user/qliphy/ori";
     TString infilename = argv[1];
     if (infilename.Contains(".root") == 0) {
         return 1;

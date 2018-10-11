@@ -20,8 +20,6 @@ using namespace std;
 
 class makesmall {
 private:
-    TFile* fout   = TFile::Open(m_dataset, "RECREATE");
-    TTree* ExTree = new TTree("demo", "demo");
     double scalef = 1.;
     double scale_btag_up;
     double scale_btag_down;
@@ -434,7 +432,9 @@ makesmall::makesmall(TTree* tree, TString dataset)
         dir->GetObject("PKUCandidates", tree);
     }
     // Jie
-    m_dataset = dataset;
+    TFile* fout   = TFile::Open(m_dataset, "RECREATE");
+    TTree* ExTree = new TTree("demo", "demo");
+    m_dataset     = dataset;
     if (m_dataset.Contains("fakephoton")) {
         use_f = true;
     }
