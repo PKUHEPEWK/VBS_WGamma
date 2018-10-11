@@ -20,8 +20,6 @@ using namespace std;
 
 class makesmall {
 private:
-    TFile* fout;
-    TTree* ExTree;
     double scalef;
     double scale_btag_up;
     double scale_btag_down;
@@ -392,7 +390,7 @@ public:
     //for muon rochester correction
 
     TString m_dataset;
-    makesmall(TTree* tree = 0, TString dataset = "");
+    makesmall(TTree* tree = 0, TString dataset = "", TFile* fout, TTree* ExTree);
     virtual ~makesmall();
     virtual Int_t    Cut(Long64_t entry);
     virtual Int_t    GetEntry(Long64_t entry);
@@ -421,7 +419,7 @@ public:
 #endif
 
 #ifdef makesmall_cxx
-makesmall::makesmall(TTree* tree, TString dataset)
+makesmall::makesmall(TTree* tree, TString dataset, TFile* fout, TTree* ExTree)
     : fChain(0) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
@@ -433,7 +431,6 @@ makesmall::makesmall(TTree* tree, TString dataset)
         TDirectory* dir = (TDirectory*)f->Get("treePKU.root:/treeDumper");
         dir->GetObject("PKUCandidates", tree);
     }
-    fout = TFile::Open(m_dataset, "RECREATE");
     // Jie
     m_dataset = dataset;
     if (m_dataset.Contains("fakephoton")) {
@@ -486,7 +483,6 @@ void makesmall::Init(TTree* tree) {
     fChain   = tree;
     fCurrent = -1;
     fChain->SetMakeClass(1);
-    ExTree = new TTree("demo", "demo");
     ExTree->Branch("scalef", &scalef, "scalef/D");
     ExTree->Branch("rawPt", &rawPt, "rawPt/F");
     ExTree->Branch("nevent", &nevent, "nevent/I");

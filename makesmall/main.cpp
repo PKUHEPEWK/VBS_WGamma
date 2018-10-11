@@ -8,13 +8,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     TString outname = "out" + infilename;
-
     std::cout << outname << std::endl;
 
-    TFile*      file1 = TFile::Open(dir + infilename);
-    TDirectory* dir1  = (TDirectory*)file1->Get("treeDumper");
-    TTree*      tree1 = (TTree*)dir1->Get("PKUCandidates");
-    makesmall   m1(tree1, outname);
+    TFile* file1 = TFile::Open(dir + infilename);
+
+    TDirectory* dir1   = (TDirectory*)file1->Get("treeDumper");
+    TTree*      tree1  = (TTree*)dir1->Get("PKUCandidates");
+    TFile*      fout   = TFile::Open(outname, "RECREATE");
+    TTree*      ExTree = new TTree("demo", "demo");
+    ;
+
+    makesmall m1(tree1, outname, fout, ExTree);
     std::cout << outname << std::endl;
     m1.Loop();
     m1.endJob();
