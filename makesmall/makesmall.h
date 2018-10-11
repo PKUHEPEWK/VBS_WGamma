@@ -20,7 +20,9 @@ using namespace std;
 
 class makesmall {
 private:
-    double scalef = 1.;
+    TFile* fout;
+    TTree* ExTree;
+    double scalef;
     double scale_btag_up;
     double scale_btag_down;
     bool   use_f;  // use this to save fakephoton sample
@@ -431,10 +433,9 @@ makesmall::makesmall(TTree* tree, TString dataset)
         TDirectory* dir = (TDirectory*)f->Get("treePKU.root:/treeDumper");
         dir->GetObject("PKUCandidates", tree);
     }
+    fout = TFile::Open(m_dataset, "RECREATE");
     // Jie
-    TFile* fout   = TFile::Open(m_dataset, "RECREATE");
-    TTree* ExTree = new TTree("demo", "demo");
-    m_dataset     = dataset;
+    m_dataset = dataset;
     if (m_dataset.Contains("fakephoton")) {
         use_f = true;
     }
@@ -485,7 +486,7 @@ void makesmall::Init(TTree* tree) {
     fChain   = tree;
     fCurrent = -1;
     fChain->SetMakeClass(1);
-
+    ExTree = new TTree("demo", "demo");
     ExTree->Branch("scalef", &scalef, "scalef/D");
     ExTree->Branch("rawPt", &rawPt, "rawPt/F");
     ExTree->Branch("nevent", &nevent, "nevent/I");
