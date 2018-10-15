@@ -49,4 +49,4 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// compile: g++ -o selec `root-config --cflags --glibs` main.cpp preselec.cpp
+// compile: g++ -o selec `root-config --cflags --glibs` preselec.cpp
