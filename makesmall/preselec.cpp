@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
     //Author: Rene Brun
 
     //TString dir = "root://cmseos.fnal.gov//eos/uscms/store/user/qliphy/ori/";
-    TString dir        = "/eos/uscms/store/user/qliphy/ori/";
+    TString dir        = "/eos/uscms/store/user/qliphy/jie/makesmall/";
     TString infilename = argv[1];
     TString outname    = "pre" + infilename;
     std::cout << outname << std::endl;
