@@ -173,9 +173,9 @@ void slectree(TTree* t1, Int_t isprom, Double_t ptlow, Double_t pthigh) {
 int produceroot() {
     /*Tt *t = new Tt("treeDumper/PKUCandidates");
   t->Add("../treePKU*.root");*/
-    TFile* f  = TFile::Open("outWA.root");
+    TFile* f  = TFile::Open("preslecpreoutWA.root");
     TTree* t  = (TTree*)f->Get("demo");
-    TFile* f1 = TFile::Open("outSMu.root");
+    TFile* f1 = TFile::Open("prepreoutSMu.root");
     TTree* t1 = (TTree*)f1->Get("demo");
     for (int i = 0; i < 8; i++) {
         slectree(t, 0, ptlow[i], pthigh[i]);
