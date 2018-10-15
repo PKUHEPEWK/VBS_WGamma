@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     std::cout << outname << std::endl;
 
     //Get old file, old tree and set top branch address
-    TFile*   f1       = TFile::Open(dir + infilename);
+    TFile*   oldfile  = TFile::Open(dir + infilename);
     TTree*   oldtree  = (TTree*)oldfile->Get("demo");
     Long64_t nentries = oldtree->GetEntries();
 
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
         if (preselec)
             newtree->Fill();
     }
-    newtree1->Write();
-    newfile1->Close();
+    newtree->Write();
+    newfile->Close();
     delete oldfile;
     delete newfile;
     return 0;
