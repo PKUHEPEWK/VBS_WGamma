@@ -116,12 +116,13 @@ void slectree(TTree* t1, Int_t isprom, Double_t ptlow, Double_t pthigh) {
       tmp[0]=(photon_isprompt[j] == 1);
       tmp[1]=(photon_isprompt[j] != 1);
       tmp[2]=true;*/
-            wjet   = (lep == 11 && nlooseeles < 2 && nloosemus == 0 && mtVlepJECnew > 30 && ptlep1 > 30 && fabs(etalep1) < 2.5 && MET_et > 30);
+            //wjet   = (lep == 11 && nlooseeles < 2 && nloosemus == 0 && mtVlepJECnew > 30 && ptlep1 > 30 && fabs(etalep1) < 2.5 && MET_et > 30); // for elec channel
+            wjet   = (lep == 13 && nlooseeles == 0 && nloosemus < 2 && mtVlepJECnew > 30 && ptlep1 > 25 && fabs(etalep1) < 2.4 && MET_et > 20);  // for muon channel
             tmp[0] = (photon_isprompt[j] == 2);
             //tmp[1]=(photon_isprompt[j] != 1);
             tmp[1]     = true;
             tmp[2]     = true;
-            photon_cut = (photon_drla[j] > 0.5 && photon_pt[j] > ptlow && photon_pt[j] < pthigh);
+            photon_cut = (photon_drla[j] > 0.7 && photon_pt[j] > ptlow && photon_pt[j] < pthigh);
             medium     = (fabs(photon_eta[j]) < 1.442 && photon_hoe[j] < 0.0396) && (photon_nhiso[j] < 2.725 + 0.0148 * photon_pt[j] + 0.000017 * photon_pt[j] * photon_pt[j]) && (photon_phoiso[j] < 2.571 + 0.0047 * photon_pt[j]);
             //medium = photon_hoe[j]<5*0.0597 && photon_nhiso[j]<5*(10.910+0.0148*photon_pt[j]+0.000017*photon_pt[j]*photon_pt[j]) && photon_phoiso[j]<5*(3.630+0.0047*photon_pt[j]);
             //medium = photon_hoe[j]<0.0597 && photon_nh(iso[j]<(10.910+0.0148*photon_pt[j]+0.000017*photon_pt[j]*photon_pt[j]) && photon_phoiso[j]<(3.630+0.0047*photon_pt[j]);
