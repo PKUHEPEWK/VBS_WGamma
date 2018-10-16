@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
     for (Long64_t i = 0; i < nentries; i++) {
         oldtree->GetEntry(i);
-        bool preselec = ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et < 20 && mtVlepJECnew > 30;
+        bool preselec = ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et > 20 && mtVlepJECnew > 30;
         if (preselec)
             newtree->Fill();
     }
