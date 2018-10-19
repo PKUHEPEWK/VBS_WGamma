@@ -202,7 +202,7 @@ private:
     int    iphoton;
     int    iphoton_f;
     double drla, drla_f;
-    bool   passEleVeto, passEleVetonew, passPixelSeedVeto, photonhaspixelseed, photonhaspixelseed_f;
+    bool   passEleVeto, passEleVetonew, passPixelSeedVeto, photonhaspixelseed, photonhaspixelseed_f, photonpasseleveto, photonpasseleveto_f;
     //Photon gen match
     int    isTrue_;
     bool   ISRPho;
@@ -442,6 +442,8 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("passPixelSeedVeto", &passPixelSeedVeto, "passPixelSeedVeto/O");
     outTree_->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspexelseed/O");
     outTree_->Branch("photonhaspixelseed_f", &photonhaspixelseed_f, "photonhaspexelseed_f/O");
+    outTree_->Branch("photonpasseleveto", &photonpasseleveto, "photonpasseleveto/O");
+    outTree_->Branch("photonpasseleveto_f", &photonpasseleveto_f, "photonpasseleveto_f/O");
     outTree_->Branch("photonet", &photonet, "photonet/D");
     outTree_->Branch("photonet_f", &photonet_f, "photonet_f/D");
     outTree_->Branch("photoneta", &photoneta, "photoneta/D");
@@ -1330,10 +1332,10 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             photon_mva[ip] = (tp4 + fwp4).M();
         }
 
-        if (passEleVetonew && phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0396 && photon_sieie[ip] < 0.01022 && chiso < 0.441 && nhiso < (2.725 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (2.571 + 0.0047 * (*photons)[ip].pt())) {
+        if (phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0396 && photon_sieie[ip] < 0.01022 && chiso < 0.441 && nhiso < (2.725 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (2.571 + 0.0047 * (*photons)[ip].pt())) {
             ismedium_photon = 1;
         }
-        if (passEleVetonew && phosc_eta > 1.566 && phosc_eta < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0219 && photon_sieie[ip] < 0.03001 && chiso < 0.442 && nhiso < (1.715 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.863 + 0.0034 * (*photons)[ip].pt())) {
+        if (phosc_eta > 1.566 && phosc_eta < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0219 && photon_sieie[ip] < 0.03001 && chiso < 0.442 && nhiso < (1.715 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.863 + 0.0034 * (*photons)[ip].pt())) {
             ismedium_photon = 1;
         }
 
@@ -1348,10 +1350,10 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 iphoton  = ip;
             }
         }
-        if (passEleVetonew && phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0597 && chiso < 15 && (nhiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (10.910 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt()))) || phoiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (3.630 + 0.0047 * (*photons)[ip].pt())) || !(photon_sieie[ip] < 0.01031 && chiso < 4))) {
+        if (phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0597 && chiso < 15 && (nhiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (10.910 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt()))) || phoiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (3.630 + 0.0047 * (*photons)[ip].pt())) || !(photon_sieie[ip] < 0.01031 && chiso < 4))) {
             ismedium_photon_f = 1;
         }  // && nhiso<(10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(3.630+0.0047*(*photons)[ip].pt())
-        if (passEleVetonew && phosc_eta > 1.566 && phosc_eta < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0481 && chiso < 15 && (nhiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (5.931 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt()))) || phoiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (6.641 + 0.0034 * (*photons)[ip].pt())) || !(photon_sieie[ip] < 0.03013 && chiso < 4))) {
+        if (phosc_eta > 1.566 && phosc_eta < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0481 && chiso < 15 && (nhiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (5.931 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt()))) || phoiso < std::min(0.2 * (*photons)[ip].pt(), 5. * (6.641 + 0.0034 * (*photons)[ip].pt())) || !(photon_sieie[ip] < 0.03013 && chiso < 4))) {
             ismedium_photon_f = 1;
         }  // && nhiso<(5.931 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(6.641+0.0034*(*photons)[ip].pt())
 
@@ -1392,6 +1394,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         wp4.SetPtEtaPhiE(WLeptonic.pt(), WLeptonic.eta(), WLeptonic.phi(), WLeptonic.energy());
         Mva                = (photonp4 + wp4).M();
         photonhaspixelseed = photon_ppsv[iphoton];
+        photonpasseleveto  = photon_pevnew[iphoton];
     }
 
     if (iphoton_f > -1 && iphoton_f < 6) {
@@ -1411,6 +1414,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         wp4_f.SetPtEtaPhiE(WLeptonic.pt(), WLeptonic.eta(), WLeptonic.phi(), WLeptonic.energy());
         Mva_f                = (photonp4_f + wp4_f).M();
         photonhaspixelseed_f = photon_ppsv[iphoton_f];
+        photonpasseleveto_f  = photon_pevnew[iphoton_f];
     }
 
     // ************************* AK4 Jets Information****************** //
@@ -1731,6 +1735,8 @@ void PKUTreeMaker::setDummyValues() {
     passPixelSeedVeto    = false;
     photonhaspixelseed   = false;
     photonhaspixelseed_f = false;
+    photonpasseleveto    = false;
+    photonpasseleveto_f  = false;
     ISRPho               = false;
     dR_                  = 999;
     dR1_                 = 999;
