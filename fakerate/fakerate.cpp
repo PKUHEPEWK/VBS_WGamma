@@ -1,4 +1,8 @@
 //#include "fit.C"
+#include "RooAddPdf.h"
+#include "RooRealVar.h"
+#include "TFile.h"
+#include "TH1.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -9,13 +13,13 @@ using namespace RooFit;
 Int_t    nBins    = 13;
 Int_t    binlow   = 2;
 Int_t    binhigh  = 5;
-Double_t lowp[8]  = {25, 30, 40, 50, 70, 100, 135};
-Double_t highp[8] = {30, 40, 50, 70, 100, 135, 400};
+Double_t lowp[7]  = {25, 30, 40, 50, 70, 100, 135};
+Double_t highp[7] = {30, 40, 50, 70, 100, 135, 400};
 
 void fit(int k);
 
-int main() {
-    for (int i = 0; i < 8; i++) {
+int fakerate() {
+    for (int i = 0; i < 7; i++) {
         fit(i);
     }
     return 0;
@@ -24,14 +28,11 @@ void fit(int k) {
 
     TFile* fdata = TFile::Open(Form("wajet_%0.f_%0.f_data.root", lowp[k], highp[k]));
     TFile* ftrue = TFile::Open(Form("wa_%0.f_%0.f_true.root", lowp[k], highp[k]));
-    //	TFile* ftrue = TFile::Open(Form("../fit_produce/ZA_%0.f_%0.f_true.root", lowp[k], highp[k]));
     TFile* ffake = TFile::Open(Form("wajet_%0.f_%0.f_fake.root", lowp[k], highp[k]));
-    //	TFile* ffake = TFile::Open(Form("../fit_produce/ZJets_FX_%0.f_%0.f_fake.root", lowp[k], highp[k]));
 
-    TH1F* hdata_ = (TH1F*)fdata->Get("histo");
-    TH1F* htrue_ = (TH1F*)ftrue->Get("histo");
-    TH1F* hfake_ = (TH1F*)ffake->Get("histo");
-
+    TH1F*    hdata_ = (TH1F*)fdata->Get("histo");
+    TH1F*    htrue_ = (TH1F*)ftrue->Get("histo");
+    TH1F*    hfake_ = (TH1F*)ffake->Get("histo");
     Double_t bins[nBins + 1];
     for (Int_t i = 0; i < nBins + 1; i++) {
         bins[i] = 0.0052 + 0.001 * i;
@@ -71,7 +72,7 @@ void fit(int k) {
     Double_t   chi2val   = chi2.getVal();
     Double_t   chi2ToNDF = chi2.getVal() / (nBins - 2);
 
-    RooPlot* xframe = sieie.frame(Title(Form("Barrel region, %0.f GeV < photon PT < %0.f GeV", lowpt[k], highpt[k])), Bins(nBins));
+    RooPlot* xframe = sieie.frame(Title(Form("Barrel region, %0.f GeV < photon PT < %0.f GeV", lowp[k], highp[k])), Bins(nBins));
     data_hist.plotOn(xframe);
     fullpdf.plotOn(xframe, Name("sum"), LineColor(kRed));
     fullpdf.plotOn(xframe, Components("ntrue"), Name("true"), LineColor(kGreen), LineStyle(9));
@@ -140,7 +141,7 @@ void fit(int k) {
     Double_t fakerateErr = sqrt(nFake_inwindowErr * nFake_inwindowErr / (nDataInWindow * nDataInWindow)
                                 + nFake_inwindow * nFake_inwindow * nDataInWindowErr * nDataInWindowErr / (nDataInWindow * nDataInWindow * nDataInWindow * nDataInWindow));
 
-    ofstream myfile(TString("fakerate_") + Form("photon_pt%0.f_%0.f.txt", lowpt[k], highpt[k]), ios::out);
+    ofstream myfile(TString("fakerate_") + Form("photon_pt%0.f_%0.f.txt", lowp[k], highp[k]), ios::out);
 
     myfile << "data in window = " << nDataInWindow << "+-" << nDataInWindowErr << " " << nDataInWindow_1 << " " << nDataInWindow_2 << " " << nDataInWindow_3 << " " << nDataInWindow_4 << " " << nDataInWindow_5 << " " << nDataInWindow_6 << " " << nDataInWindow_7 << std::endl;
     myfile << "nDatatotal = " << nDatatotal << std::endl;
@@ -171,6 +172,6 @@ void fit(int k) {
     textFR->Draw();
 
     char buffer[256];
-    sprintf(buffer, "pt_%0.f_%0.f.png", lowpt[k], highpt[k]);
+    sprintf(buffer, "pt_%0.f_%0.f.png", lowp[k], highp[k]);
     c1->SaveAs(buffer);
 }
