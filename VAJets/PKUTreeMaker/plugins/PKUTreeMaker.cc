@@ -440,8 +440,8 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("passEleVeto", &passEleVeto, "passEleVeto/O");
     outTree_->Branch("passEleVetonew", &passEleVetonew, "passEleVetonew/O");
     outTree_->Branch("passPixelSeedVeto", &passPixelSeedVeto, "passPixelSeedVeto/O");
-    outTree_->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspexelseed/O");
-    outTree_->Branch("photonhaspixelseed_f", &photonhaspixelseed_f, "photonhaspexelseed_f/O");
+    outTree_->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspixelseed/O");
+    outTree_->Branch("photonhaspixelseed_f", &photonhaspixelseed_f, "photonhaspixelseed_f/O");
     outTree_->Branch("photonpasseleveto", &photonpasseleveto, "photonpasseleveto/O");
     outTree_->Branch("photonpasseleveto_f", &photonpasseleveto_f, "photonpasseleveto_f/O");
     outTree_->Branch("photonet", &photonet, "photonet/D");
