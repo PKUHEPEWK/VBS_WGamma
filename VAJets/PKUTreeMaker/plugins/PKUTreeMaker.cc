@@ -1331,11 +1331,11 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             fwp4.SetPtEtaPhiE(WLeptonic.pt(), WLeptonic.eta(), WLeptonic.phi(), WLeptonic.energy());
             photon_mva[ip] = (tp4 + fwp4).M();
         }
-
-        if (phosc_eta < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0396 && photon_sieie[ip] < 0.01022 && chiso < 0.441 && nhiso < (2.725 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (2.571 + 0.0047 * (*photons)[ip].pt())) {
+        // new slection for data
+        if (fabs(phosc_eta) < 1.4442 && (*photons)[ip].hadTowOverEm() < 0.0396 && photon_sieie[ip] < 0.01022 && chiso < 0.441 && nhiso < (2.725 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (2.571 + 0.0047 * (*photons)[ip].pt())) {
             ismedium_photon = 1;
         }
-        if (phosc_eta > 1.566 && phosc_eta < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0219 && photon_sieie[ip] < 0.03001 && chiso < 0.442 && nhiso < (1.715 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.863 + 0.0034 * (*photons)[ip].pt())) {
+        if (fabs(phosc_eta) > 1.566 && fabs(phosc_eta) < 2.5 && (*photons)[ip].hadTowOverEm() < 0.0219 && photon_sieie[ip] < 0.03001 && chiso < 0.442 && nhiso < (1.715 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.863 + 0.0034 * (*photons)[ip].pt())) {
             ismedium_photon = 1;
         }
 
@@ -1350,13 +1350,13 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 iphoton  = ip;
             }
         }
-        if (phosc_eta < 1.4442 && !((*photons)[ip].hadTowOverEm() < 0.0597 && photon_sieie[ip] < 0.01031 && chiso < 1.295 && nhiso < (10.91 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.63 + 0.0047 * (*photons)[ip].pt()))) {
+        // new slection for plj
+        if (fabs(phosc_eta) < 1.4442 && !((*photons)[ip].hadTowOverEm() < 0.0597 && photon_sieie[ip] < 0.01031 && chiso < 1.295 && nhiso < (10.91 + (0.0148 * (*photons)[ip].pt() + 0.000017 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (3.63 + 0.0047 * (*photons)[ip].pt()))) {
             ismedium_photon_f = 1;
-        }  // && nhiso<(10.910 + (0.0148*(*photons)[ip].pt()+0.000017*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(3.630+0.0047*(*photons)[ip].pt())
-        if (phosc_eta > 1.566 && phosc_eta < 2.5 && !((*photons)[ip].hadTowOverEm() < 0.0481 && photon_sieie[ip] < 0.03013 && chiso < 1.011 && nhiso < (5.931 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (6.641 + 0.0034 * (*photons)[ip].pt()))) {
+        }
+        if (fabs(phosc_eta) > 1.566 && fabs(phosc_eta) < 2.5 && !((*photons)[ip].hadTowOverEm() < 0.0481 && photon_sieie[ip] < 0.03013 && chiso < 1.011 && nhiso < (5.931 + (0.0163 * (*photons)[ip].pt() + 0.000014 * (*photons)[ip].pt() * (*photons)[ip].pt())) && phoiso < (6.641 + 0.0034 * (*photons)[ip].pt()))) {
             ismedium_photon_f = 1;
-        }  // && nhiso<(5.931 + (0.0163*(*photons)[ip].pt()+0.000014*(*photons)[ip].pt()*(*photons)[ip].pt())) && phoiso<(6.641+0.0034*(*photons)[ip].pt())
-
+        }
         if (ismedium_photon_f == 1 && deltaR(phosc_eta, phosc_phi, etalep1, philep1) > 0.5) {
             if (cachecount2 == 0) {
                 photonet_f = (*photons)[ip].pt();
