@@ -2318,8 +2318,11 @@ void makesmall::Loop() {
                 }
             }
         }
-
-        ExTree->Fill();
+        // be careful to put selections here
+        if (ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et > 20) {
+            ExTree->Fill();
+        }
+        // ExTree->Fill();
     }
 
     input1->Close();
