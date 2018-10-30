@@ -10,12 +10,13 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 #Then, get a release
 INITDIR="$PWD"
-export SCRAM_ARCH="slc6_amd64_gcc491"
+export SCRAM_ARCH="slc6_amd64_gcc530"
 CMS_VERSION="CMSSW_8_0_26_patch1"
 scramv1 project CMSSW ${CMS_VERSION}
 cd ${CMS_VERSION}
 eval `scram runtime -sh`
 cd $INITDIR
 ./small $@
+# mv out*.root $INITDIR
 rm -rf CMSSW_8_0_26_patch1
 printf "End time: "; /bin/date
