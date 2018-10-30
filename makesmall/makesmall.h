@@ -100,6 +100,8 @@ public:
     Bool_t   passPixelSeedVeto;
     Bool_t   photonhaspixelseed;
     Bool_t   photonhaspixelseed_f;
+    Bool_t   photonpasseleveto;
+    Bool_t   photonpasseleveto_f;
     Double_t photonet;
     Double_t photonet_f;
     Double_t photoneta;
@@ -273,8 +275,10 @@ public:
     TBranch* b_passEleVeto;                   //!
     TBranch* b_passEleVetonew;                //!
     TBranch* b_passPixelSeedVeto;             //!
-    TBranch* b_photonhaspexelseed;            //!
-    TBranch* b_photonhaspexelseed_f;          //!
+    TBranch* b_photonhaspixelseed;            //!
+    TBranch* b_photonhaspixelseed_f;          //!
+    TBranch* b_photonpasseleveto;             //!
+    TBranch* b_photonpasseleveto_f;           //!
     TBranch* b_photonet;                      //!
     TBranch* b_photonet_f;                    //!
     TBranch* b_photoneta;                     //!
@@ -585,7 +589,8 @@ void makesmall::Init(TTree* tree) {
         // branch have corresponding _f branch
         ExTree->Branch("Mla", &Mla_f, "Mla/D");
         //ExTree->Branch("Mva", &Mva_f, "Mva/D");
-        //ExTree->Branch("photonhaspixelseed", &photonhaspixelseed_f, "photonhaspixelseed/O");
+        ExTree->Branch("photonhaspixelseed", &photonhaspixelseed_f, "photonhaspixelseed/O");
+        ExTree->Branch("photonpasseleveto", &photonpasseleveto_f, "photonpasseleveto/O");
         ExTree->Branch("photonet", &photonet_f, "photonet/D");
         ExTree->Branch("photoneta", &photoneta_f, "photoneta/D");
         ExTree->Branch("photonphi", &photonphi_f, "photonphi/D");
@@ -627,7 +632,8 @@ void makesmall::Init(TTree* tree) {
         // branch have corresponding _f branch
         ExTree->Branch("Mla", &Mla, "Mla/D");
         //ExTree->Branch("Mva", &Mva, "Mva/D");
-        //ExTree->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspixelseed/O");
+        ExTree->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspixelseed/O");
+        ExTree->Branch("photonpasseleveto", &photonpasseleveto, "photonpasseleveto/O");
         ExTree->Branch("photonet", &photonet, "photonet/D");
         ExTree->Branch("photoneta", &photoneta, "photoneta/D");
         ExTree->Branch("photonphi", &photonphi, "photonphi/D");
@@ -722,8 +728,10 @@ void makesmall::Init(TTree* tree) {
     fChain->SetBranchAddress("passEleVeto", &passEleVeto, &b_passEleVeto);
     fChain->SetBranchAddress("passEleVetonew", &passEleVetonew, &b_passEleVetonew);
     fChain->SetBranchAddress("passPixelSeedVeto", &passPixelSeedVeto, &b_passPixelSeedVeto);
-    fChain->SetBranchAddress("photonhaspixelseed", &photonhaspixelseed, &b_photonhaspexelseed);
-    fChain->SetBranchAddress("photonhaspixelseed_f", &photonhaspixelseed_f, &b_photonhaspexelseed_f);
+    fChain->SetBranchAddress("photonhaspixelseed", &photonhaspixelseed, &b_photonhaspixelseed);
+    fChain->SetBranchAddress("photonhaspixelseed_f", &photonhaspixelseed_f, &b_photonhaspixelseed_f);
+    fChain->SetBranchAddress("photonpasseleveto", &photonpasseleveto, &b_photonpasseleveto);
+    fChain->SetBranchAddress("photonpasseleveto_f", &photonpasseleveto_f, &b_photonpasseleveto_f);
     fChain->SetBranchAddress("photonet", &photonet, &b_photonet);
     fChain->SetBranchAddress("photonet_f", &photonet_f, &b_photonet_f);
     fChain->SetBranchAddress("photoneta", &photoneta, &b_photoneta);
