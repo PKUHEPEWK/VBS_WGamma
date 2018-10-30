@@ -117,7 +117,7 @@ void makesmall::Loop() {
             scalef = 1000. * 405.271 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
 
-        if (!m_dataset.Contains("outSMu") && !m_dataset.Contains("outSEle")) {
+        if (!m_dataset.Contains("outSMu") && !m_dataset.Contains("outSEle") && !m_dataset.Contains("fake")) {
             pileupWeight    = h->GetBinContent(h->GetXaxis()->FindBin(npT));
             scale_btag_up   = 1.0;
             scale_btag_down = 1.0;
