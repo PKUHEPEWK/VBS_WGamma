@@ -15,7 +15,7 @@ config.section_("Data")
 config.Data.inputDataset = '/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 80
+config.Data.unitsPerJob = 40
 config.Data.lumiMask = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 #config.Data.runRange = '246908-258750'
 #config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
@@ -23,7 +23,4 @@ config.Data.publication = False
 config.Data.outputDatasetTag = 'SMu16E-v1'
 
 config.section_("Site")
-config.Site.storageSite = 'T3_US_FNALLPC'  #2_CH_CERN'
-
-
-
+config.Site.storageSite = 'T2_CN_Beijing'  #2_CH_CERN'
