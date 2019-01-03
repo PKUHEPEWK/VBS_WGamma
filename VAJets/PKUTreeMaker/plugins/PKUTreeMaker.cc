@@ -164,7 +164,7 @@ private:
     double ptVlepJEC, yVlepJEC, phiVlepJEC, massVlepJEC, mtVlepJEC, mtVlepJECnew;
     double Mla, Mva;
     double Mla_f, Mva_f;
-    double ptlep1, etalep1, philep1;
+    double ptlep1, etalep1, philep1,energylep1;
     // for muon rochester correction
     int    muon1_trackerLayers;
     double matchedgenMu1_pt;
@@ -407,6 +407,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("Mva_f", &Mva_f, "Mva_f/D");
     outTree_->Branch("nlooseeles", &nlooseeles, "nlooseeles/I");
     outTree_->Branch("nloosemus", &nloosemus, "nloosemus/I");
+/*
     outTree_->Branch("genphoton_pt", genphoton_pt, "genphoton_pt[6]/D");
     outTree_->Branch("genphoton_eta", genphoton_eta, "genphoton_eta[6]/D");
     outTree_->Branch("genphoton_phi", genphoton_phi, "genphoton_phi[6]/D");
@@ -415,7 +416,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("genmuon_phi", genmuon_phi, "genmuon_phi[6]/D");
     outTree_->Branch("genelectron_pt", genelectron_pt, "genelectron_pt[6]/D");
     outTree_->Branch("genelectron_eta", genelectron_eta, "genelectron_eta[6]/D");
-    outTree_->Branch("genelectron_phi", genelectron_phi, "genelectron_phi[6]/D");
+    outTree_->Branch("genelectron_phi", genelectron_phi, "genelectron_phi[6]/D");*/
     /// Photon
     outTree_->Branch("photon_pt", photon_pt, "photon_pt[6]/D");
     outTree_->Branch("photon_eta", photon_eta, "photon_eta[6]/D");
@@ -426,22 +427,22 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("photon_pev", photon_pev, "photon_pev[6]/O");
     outTree_->Branch("photon_pevnew", photon_pevnew, "photon_pevnew[6]/O");
     outTree_->Branch("photon_ppsv", photon_ppsv, "photon_ppsv[6]/O");
-    outTree_->Branch("photon_iseb", photon_iseb, "photon_iseb[6]/O");
-    outTree_->Branch("photon_isee", photon_isee, "photon_isee[6]/O");
+    //outTree_->Branch("photon_iseb", photon_iseb, "photon_iseb[6]/O");
+    //outTree_->Branch("photon_isee", photon_isee, "photon_isee[6]/O");
     outTree_->Branch("photon_hoe", photon_hoe, "photon_hoe[6]/D");
     outTree_->Branch("photon_sieie", photon_sieie, "photon_sieie[6]/D");
     outTree_->Branch("photon_sieie2", photon_sieie2, "photon_sieie2[6]/D");
     outTree_->Branch("photon_chiso", photon_chiso, "photon_chiso[6]/D");
     outTree_->Branch("photon_nhiso", photon_nhiso, "photon_nhiso[6]/D");
     outTree_->Branch("photon_phoiso", photon_phoiso, "photon_phoiso[6]/D");
-    outTree_->Branch("photon_istrue", photon_istrue, "photon_istrue[6]/I");
+    //outTree_->Branch("photon_istrue", photon_istrue, "photon_istrue[6]/I");
     outTree_->Branch("photon_isprompt", photon_isprompt, "photon_isprompt[6]/I");
     outTree_->Branch("photon_drla", photon_drla, "photon_drla[6]/D");
     outTree_->Branch("photon_mla", photon_mla, "photon_mla[6]/D");
-    outTree_->Branch("photon_mva", photon_mva, "photon_mva[6]/D");
-    outTree_->Branch("passEleVeto", &passEleVeto, "passEleVeto/O");
-    outTree_->Branch("passEleVetonew", &passEleVetonew, "passEleVetonew/O");
-    outTree_->Branch("passPixelSeedVeto", &passPixelSeedVeto, "passPixelSeedVeto/O");
+    //outTree_->Branch("photon_mva", photon_mva, "photon_mva[6]/D");
+    //outTree_->Branch("passEleVeto", &passEleVeto, "passEleVeto/O");
+    //outTree_->Branch("passEleVetonew", &passEleVetonew, "passEleVetonew/O");
+    //outTree_->Branch("passPixelSeedVeto", &passPixelSeedVeto, "passPixelSeedVeto/O");
     outTree_->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspixelseed/O");
     outTree_->Branch("photonhaspixelseed_f", &photonhaspixelseed_f, "photonhaspixelseed_f/O");
     outTree_->Branch("photonpasseleveto", &photonpasseleveto, "photonpasseleveto/O");
@@ -560,14 +561,14 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("HLT_Mu2", &HLT_Mu2, "HLT_Mu2/I");
     outTree_->Branch("HLT_Mu3", &HLT_Mu3, "HLT_Mu3/I");
     // filter
-    outTree_->Branch("passFilter_HBHE", &passFilter_HBHE_, "passFilter_HBHE_/O");
+   /* outTree_->Branch("passFilter_HBHE", &passFilter_HBHE_, "passFilter_HBHE_/O");
     outTree_->Branch("passFilter_HBHEIso", &passFilter_HBHEIso_, "passFilter_HBHEIso_/O");
     outTree_->Branch("passFilter_globalTightHalo", &passFilter_globalTightHalo_, "passFilter_globalTightHalo_/O");
     outTree_->Branch("passFilter_ECALDeadCell", &passFilter_ECALDeadCell_, "passFilter_ECALDeadCell_/O");
     outTree_->Branch("passFilter_GoodVtx", &passFilter_GoodVtx_, "passFilter_GoodVtx_/O");
     outTree_->Branch("passFilter_EEBadSc", &passFilter_EEBadSc_, "passFilter_EEBadSc_/O");
     outTree_->Branch("passFilter_badMuon", &passFilter_badMuon_, "passFilter_badMuon_/O");
-    outTree_->Branch("passFilter_badChargedHadron", &passFilter_badChargedHadron_, "passFilter_badChargedHadron_/O");
+    outTree_->Branch("passFilter_badChargedHadron", &passFilter_badChargedHadron_, "passFilter_badChargedHadron_/O");*/
     //  outTree_->Branch("triggerWeight"   ,&triggerWeight  ,"triggerWeight/D"  );
     outTree_->Branch("lumiWeight", &lumiWeight, "lumiWeight/D");
     outTree_->Branch("pileupWeight", &pileupWeight, "pileupWeight/D");
@@ -846,7 +847,9 @@ int PKUTreeMaker::matchToTrueLep(double lept_eta, double lept_phi,
         return UNMATCHED;
     }
     ispromptLep = ((*genParticles)[im].isPromptFinalState() || (*genParticles)[im].isDirectPromptTauDecayProductFinalState());
-    return 1;
+    if(ispromptLep && dR < 0.3)ispromptLep=1;
+    else ispromptLep = 0;
+return 1;
 }
 /////////////////////////////////////////////////////////////
 //------------------------------------
@@ -1041,7 +1044,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     edm::Handle<edm::View<pat::Photon>> photons;
     iEvent.getByToken(photonSrc_, photons);
-
+if (photons->empty()) {   outTree_->Fill();return;  }//outTree_->Fill();
     edm::Handle<edm::View<reco::GenParticle>> genParticles;  //define genParticle
     iEvent.getByToken(genSrc_, genParticles);
     //   iEvent.getByLabel(InputTag("packedGenParticles"), genParticles);
@@ -1186,9 +1189,6 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     phiVlep             = leptonicV.phi();
     massVlep            = leptonicV.mass();
     mtVlep              = leptonicV.mt();
-    ptlep1              = leptonicV.daughter(1)->pt();   //privious use daughter(1)
-    etalep1             = leptonicV.daughter(1)->eta();  //privious use daughter(1)
-    philep1             = leptonicV.daughter(1)->phi();  //privious use daughter(1)
     // retreive electron's sigma_ieie for shape correction
     /*if (goodeles->size() > 1) {
         ele1_sigmaieie = (*goodeles)[0].full5x5_sigmaIetaIeta();
@@ -1219,7 +1219,7 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     ptlep1            = leptonicV.daughter(1)->pt();
     etalep1           = leptonicV.daughter(1)->eta();
     philep1           = leptonicV.daughter(1)->phi();
-    double energylep1 = leptonicV.daughter(1)->energy();
+    energylep1 = leptonicV.daughter(1)->energy();
     if (leptonicV.daughter(0)->isElectron() || leptonicV.daughter(0)->isMuon()) {
         ptlep1     = leptonicV.daughter(0)->pt();
         etalep1    = leptonicV.daughter(0)->eta();
@@ -1311,8 +1311,8 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
         if (ip < 6) {
             photon_pt[ip]     = (*photons)[ip].pt();
-            photon_eta[ip]    = phosc_eta;  //(*photons)[ip].eta();
-            photon_phi[ip]    = phosc_phi;  //(*photons)[ip].phi();
+            photon_eta[ip]    = (*photons)[ip].eta();
+            photon_phi[ip]    = (*photons)[ip].phi();
             photon_e[ip]      = (*photons)[ip].energy();
             photonsc_eta[ip]  = phosc_eta;
             photonsc_phi[ip]  = phosc_phi;

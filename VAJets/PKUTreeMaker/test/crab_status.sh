@@ -37,3 +37,5 @@ crab status -d crab_ZZ-2
 crab status -d crab_TTJets-1
 crab status -d crab_TTJets-2
 crab status -d crab_STtbar-1
+crab status -d crab_WJets-1
+crab status -d crab_WJets-2
