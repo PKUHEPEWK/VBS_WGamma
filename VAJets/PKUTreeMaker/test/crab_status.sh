@@ -11,10 +11,7 @@ crab status -d crab_SEle16H-v1
 crab status -d crab_SEle16H-v2
 crab status -d crab_SMu16C-v1
 crab status -d crab_SMu16D-v1
-crab status -d crab_SMu16E-v1
-crab status -d crab_SMu16F-v1
 crab status -d crab_SMu16G-v1
-crab status -d crab_SMu16H-v1
 crab status -d crab_SMu16H-v2
 crab status -d crab_SMu16B-v1
 crab status -d crab_DY-1
@@ -35,7 +32,12 @@ crab status -d crab_WZ-2
 crab status -d crab_ZZ-1
 crab status -d crab_ZZ-2
 crab status -d crab_TTJets-1
-crab status -d crab_TTJets-2
 crab status -d crab_STtbar-1
-crab status -d crab_WJets-1
 crab status -d crab_WJets-2
+
+
+crab status -d crab_WJets-1
+crab status -d crab_TTJets-2
+crab status -d crab_SMu16H-v1
+crab status -d crab_SMu16F-v1
+crab status -d crab_SMu16E-v1

@@ -149,6 +149,7 @@ private:
     EffectiveAreas                         effAreaPhotons_;
 
     // ----------member data ---------------------------
+    TH1D*  thewgt;
     TTree* outTree_;
 
     double MW_;
@@ -164,7 +165,7 @@ private:
     double ptVlepJEC, yVlepJEC, phiVlepJEC, massVlepJEC, mtVlepJEC, mtVlepJECnew;
     double Mla, Mva;
     double Mla_f, Mva_f;
-    double ptlep1, etalep1, philep1,energylep1;
+    double ptlep1, etalep1, philep1, energylep1;
     // for muon rochester correction
     int    muon1_trackerLayers;
     double matchedgenMu1_pt;
@@ -383,6 +384,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     MW_ = 80.385;
     //now do what ever initialization is needed
     edm::Service<TFileService> fs;
+    thewgt   = fs->make<TH1D>("thWeight", "theWeight", 2, 0., 2.);
     outTree_ = fs->make<TTree>("PKUCandidates", "PKU Candidates");
     /// Basic event quantities
     outTree_->Branch("rawPt", &rawPt, "rawPt/F");
@@ -407,7 +409,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("Mva_f", &Mva_f, "Mva_f/D");
     outTree_->Branch("nlooseeles", &nlooseeles, "nlooseeles/I");
     outTree_->Branch("nloosemus", &nloosemus, "nloosemus/I");
-/*
+    /*
     outTree_->Branch("genphoton_pt", genphoton_pt, "genphoton_pt[6]/D");
     outTree_->Branch("genphoton_eta", genphoton_eta, "genphoton_eta[6]/D");
     outTree_->Branch("genphoton_phi", genphoton_phi, "genphoton_phi[6]/D");
@@ -561,7 +563,7 @@ PKUTreeMaker::PKUTreeMaker(const edm::ParameterSet& iConfig)  //:
     outTree_->Branch("HLT_Mu2", &HLT_Mu2, "HLT_Mu2/I");
     outTree_->Branch("HLT_Mu3", &HLT_Mu3, "HLT_Mu3/I");
     // filter
-   /* outTree_->Branch("passFilter_HBHE", &passFilter_HBHE_, "passFilter_HBHE_/O");
+    /* outTree_->Branch("passFilter_HBHE", &passFilter_HBHE_, "passFilter_HBHE_/O");
     outTree_->Branch("passFilter_HBHEIso", &passFilter_HBHEIso_, "passFilter_HBHEIso_/O");
     outTree_->Branch("passFilter_globalTightHalo", &passFilter_globalTightHalo_, "passFilter_globalTightHalo_/O");
     outTree_->Branch("passFilter_ECALDeadCell", &passFilter_ECALDeadCell_, "passFilter_ECALDeadCell_/O");
@@ -821,8 +823,7 @@ bool PKUTreeMaker::hasMatchedPromptElectron(const reco::SuperClusterRef& sc, con
 }
 
 /////////////////////////////////////////////////////////////
-int PKUTreeMaker::matchToTrueLep(double lept_eta, double lept_phi,
-                                 const edm::Handle<edm::View<reco::GenParticle>>& genParticles, double& dR, int& ispromptLep) {
+int PKUTreeMaker::matchToTrueLep(double lept_eta, double lept_phi, const edm::Handle<edm::View<reco::GenParticle>>& genParticles, double& dR, int& ispromptLep) {
     dR                                = 999;
     const reco::Candidate* closestLep = 0;
 
@@ -847,14 +848,15 @@ int PKUTreeMaker::matchToTrueLep(double lept_eta, double lept_phi,
         return UNMATCHED;
     }
     ispromptLep = ((*genParticles)[im].isPromptFinalState() || (*genParticles)[im].isDirectPromptTauDecayProductFinalState());
-    if(ispromptLep && dR < 0.3)ispromptLep=1;
-    else ispromptLep = 0;
-return 1;
+    if (ispromptLep && dR < 0.3)
+        ispromptLep = 1;
+    else
+        ispromptLep = 0;
+    return 1;
 }
 /////////////////////////////////////////////////////////////
 //------------------------------------
-int PKUTreeMaker::matchToTruth(const reco::Photon&                              pho,
-                               const edm::Handle<edm::View<reco::GenParticle>>& genParticles, bool& ISRPho, double& dR, int& isprompt) {
+int PKUTreeMaker::matchToTruth(const reco::Photon& pho, const edm::Handle<edm::View<reco::GenParticle>>& genParticles, bool& ISRPho, double& dR, int& isprompt) {
     //
     // Explicit loop and geometric matching method
     //
@@ -914,8 +916,7 @@ int PKUTreeMaker::matchToTruth(const reco::Photon&                              
 }
 //------------------------------------
 
-void PKUTreeMaker::findFirstNonPhotonMother(const reco::Candidate* particle,
-                                            int& ancestorPID, int& ancestorStatus) {
+void PKUTreeMaker::findFirstNonPhotonMother(const reco::Candidate* particle, int& ancestorPID, int& ancestorStatus) {
     if (particle == 0) {
         printf("SimplePhotonNtupler: ERROR! null candidate pointer, this should never happen\n");
         return;
@@ -978,9 +979,11 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         iEvent.getByToken(GenToken_, genEvtInfo);
         theWeight = genEvtInfo->weight();
         if (theWeight > 0)
-            nump = nump + 1;
+            thewgt->Fill(1.5);
+        nump = nump + 1;
         if (theWeight < 0)
-            numm = numm + 1;
+            thewgt->Fill(0.5);
+        numm = numm + 1;
         edm::Handle<std::vector<PileupSummaryInfo>> PupInfo;
         iEvent.getByToken(PUToken_, PupInfo);
         std::vector<PileupSummaryInfo>::const_iterator PVI;
@@ -991,6 +994,10 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 npIT = PVI->getPU_NumInteractions();
             }
         }
+    }
+    else {
+        thewgt->Fill(1.5);
+        nump = nump + 1;
     }
 
     Handle<TriggerResults> trigRes;
@@ -1031,7 +1038,6 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     iEvent.getByToken(leptonicVSrc_, leptonicVs);
 
     if (leptonicVs->empty()) {
-        outTree_->Fill();
         return;
     }
 
@@ -1044,7 +1050,9 @@ void PKUTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     edm::Handle<edm::View<pat::Photon>> photons;
     iEvent.getByToken(photonSrc_, photons);
-if (photons->empty()) {   outTree_->Fill();return;  }//outTree_->Fill();
+    if (photons->empty()) {
+        return;
+    }                                                        //outTree_->Fill();
     edm::Handle<edm::View<reco::GenParticle>> genParticles;  //define genParticle
     iEvent.getByToken(genSrc_, genParticles);
     //   iEvent.getByLabel(InputTag("packedGenParticles"), genParticles);
@@ -1117,7 +1125,6 @@ if (photons->empty()) {   outTree_->Fill();return;  }//outTree_->Fill();
     edm::Handle<reco::VertexCollection> vertices;
     iEvent.getByToken(VertexToken_, vertices);
     if (vertices->empty()) {
-        outTree_->Fill();
         return;
     }  // skip the event if no PV found
     nVtx                                                   = vertices->size();
@@ -1134,7 +1141,6 @@ if (photons->empty()) {   outTree_->Fill();return;  }//outTree_->Fill();
         }
     }
     if (firstGoodVertex == vertices->end()) {
-        outTree_->Fill();
         return;
     }  // skip event if there are no good PVs
 
@@ -1216,9 +1222,9 @@ if (photons->empty()) {   outTree_->Fill();return;  }//outTree_->Fill();
     }
     //	std::cout<<"matchedgenMu1_pt "<<matchedgenMu1_pt<<std::endl;
     // for muon rochester correction
-    ptlep1            = leptonicV.daughter(1)->pt();
-    etalep1           = leptonicV.daughter(1)->eta();
-    philep1           = leptonicV.daughter(1)->phi();
+    ptlep1     = leptonicV.daughter(1)->pt();
+    etalep1    = leptonicV.daughter(1)->eta();
+    philep1    = leptonicV.daughter(1)->phi();
     energylep1 = leptonicV.daughter(1)->energy();
     if (leptonicV.daughter(0)->isElectron() || leptonicV.daughter(0)->isMuon()) {
         ptlep1     = leptonicV.daughter(0)->pt();
