@@ -22,4 +22,4 @@ config.Data.publication = False
 config.Data.outputDatasetTag = 'DY-1'
 
 config.section_("Site")
-config.Site.storageSite = 'T2_CN_Beijing'  #2_CH_CERN'
+config.Site.storageSite = 'T3_US_FNALLPC' #T2_CN_Beijing'
