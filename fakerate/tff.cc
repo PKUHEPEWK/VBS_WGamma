@@ -22,7 +22,7 @@ void fit(Double_t ptlow, Double_t pthigh, string ismuon_, string isbarrel_) {
     TString isbarrel = isbarrel_;
 
     Double_t sieie_cut;
-    if (ismuon.Contains("Barrel")) {
+    if (isbarrel.Contains("BARREL")) {
         sieie_cut = 0.01022;
     }
     else {
@@ -46,7 +46,9 @@ void fit(Double_t ptlow, Double_t pthigh, string ismuon_, string isbarrel_) {
             hfake->SetBinContent(i, 0);
         }
     }
-
+    hdata->Sumw2();
+    htrue->Sumw2();
+    hfake->Sumw2();
     TObjArray* mc = new TObjArray(2);
     mc->Add(htrue);
     mc->Add(hfake);
