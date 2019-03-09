@@ -41,7 +41,7 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
         nlooseeles_cut = 1;
         nloosemus_cut  = 2;
         HLT_Mu2_cut    = 1;
-        mla_cut        = -1;  // -- -1 means no mla cut
+        mla_cut        = 10;  // -- -1 means no mla cut
         lepton_pt_cut  = 25;
     }
     else if (ismuon.Contains("ELECTRON")) {
@@ -95,9 +95,9 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
     Double_t real_wgt;
 
     //histogram
-    TH1D* histo = new TH1D("histo", "histo", nBins, sieie_lower, sieie_lower);
+    TH1D* histo = new TH1D("histo", "histo", nBins, sieie_lower, sieie_upper);
     histo->Sumw2();
-    TH1D* hMla  = new TH1D("hMla", "hMla", 100, 0, 200);
+    TH1D* hMla = new TH1D("hMla", "hMla", 100, 0, 200);
 
     TFile* ipt;
 
@@ -107,7 +107,7 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
     else if ((template_type == 0 || template_type == 1) && ismuon.Contains("ELECTRON")) {
         ipt = TFile::Open("/home/pku/xiaoj/makesmall/draw_data/outSEle.root");
     }
-    else {
+    else if (template_type == 2) {
         ipt = TFile::Open("/home/pku/xiaoj/makesmall/draw_data/outWA.root");
     }
 
@@ -228,23 +228,15 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
                 std::cout << "event\t " << n << "\t from \t" << nentries << std::endl;
             }
             n++;
-            if (ismuon.Contains("MUON")) {
-                if (*lep == lepton_pid && *nlooseeles < nlooseeles_cut && *nloosemus < nloosemus_cut && (*ptlep1) > lepton_pt_cut && fabs(*etalep1) < 2.4 && *MET_et > 35 && *HLT_Mu2 == 1) {
-                    continue;
-                }
+            if (!((ismuon.Contains("MUON") && *lep == lepton_pid && *nlooseeles < nlooseeles_cut && *nloosemus < nloosemus_cut && (*ptlep1) > lepton_pt_cut && fabs(*etalep1) < 2.4 && *MET_et > 35 && *HLT_Mu2 == 1) || (ismuon.Contains("ELECTRON") && *lep == lepton_pid && *nlooseeles < nlooseeles_cut && *nloosemus < nloosemus_cut && (*ptlep1) > lepton_pt_cut && fabs(*etalep1) < 2.5 && *MET_et > 35 && *HLT_Ele2 == 1))) {
+                continue;
             }
-            else if (ismuon.Contains("ELECTRON")) {
-                if (*lep == lepton_pid && *nlooseeles < nlooseeles_cut && *nloosemus < nloosemus_cut && (*ptlep1) > lepton_pt_cut && fabs(*etalep1) < 2.4 && *MET_et > 35 && *HLT_Ele2 == 1) {
-                    continue;
-                }
-            }
+
             Int_t    flag = -1;
             Double_t pt   = -1;
             for (int iphoton = 0; iphoton < 6; iphoton++) {
-                if (template_type == 2) {
-                    if (photon_isprompt[iphoton] != 2) {
-                        continue;
-                    }
+                if (template_type == 2 && photon_isprompt[iphoton] != 2) {
+                    continue;
                 }  // true template require photon is prompt
                 //cout << "tagq1: is prompt" << endl;
                 if (photon_mla[iphoton] > 0 && abs(photon_mla[iphoton] - 91.2) > mla_cut && photon_drla[iphoton] > 0.5 && photon_pt[iphoton] > ptlow[i] && photon_pt[iphoton] < pthigh[i] && photon_hoe[iphoton] < hoe_cut && (photon_nhiso[iphoton] < nhiso_cut[0] + nhiso_cut[1] * photon_pt[iphoton] + nhiso_cut[2] * photon_pt[iphoton] * photon_pt[iphoton]) && (photon_phoiso[iphoton] < phoiso_cut[0] + phoiso_cut[1] * photon_pt[iphoton]) && photon_chiso[iphoton] > chiso_cut_low && photon_chiso[iphoton] < chiso_cut_high && fabs(photonsc_eta[iphoton]) > photonsc_eta_cut_low && fabs(photonsc_eta[iphoton]) < photonsc_eta_cut_high && !photon_ppsv[iphoton]) {
@@ -255,18 +247,17 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
                     }
                 }
             }
-
-            // real weight
-            if (template_type == 0) {
-                real_wgt = 1.0 * (*lumiWeight) * (*pileupWeight);
-            }
-            else if (template_type == 1) {
-                real_wgt = 1.0 * (*lumiWeight) * (*pileupWeight);
-            }
-            else if (template_type == 2) {
-                real_wgt = (*scalef) * (*lumiWeight) * (*pileupWeight);
-            }
             if (flag != -1) {
+                // real weight
+                if (template_type == 0) {
+                    real_wgt = (*lumiWeight) * (*pileupWeight);
+                }
+                else if (template_type == 1) {
+                    real_wgt = (*lumiWeight) * (*pileupWeight);
+                }
+                else if (template_type == 2) {
+                    real_wgt = (*scalef) * (*lumiWeight) * (*pileupWeight);
+                }
                 out << *run << "\t" << *ls << "\t" << *nevent << "\t" << photon_mla[flag] << "\n";
                 histo->Fill(photon_sieie[flag], real_wgt);
                 hMla->Fill(photon_mla[flag], real_wgt);
@@ -280,9 +271,12 @@ void generate_template(string ismuon_, string isbarrel_, int template_type) {
         opt->Close();
         out << "total entries:" << nentries << "\t total count:" << sum << "\n";
         out.close();
+        histo->Reset();
+        hMla->Reset();
     }
 }
 int main(int argc, char** argv) {
+    cout << "DOU DOU" << endl;
     string ismuon        = argv[1];
     string isbarrel      = argv[2];
     int    template_type = atoi(argv[3]);
