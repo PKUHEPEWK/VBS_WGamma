@@ -31,9 +31,9 @@ void makesmall::Loop() {
 
     Long64_t nentries = fChain->GetEntriesFast();
 
-    Long64_t npp = fChain->GetEntries("theWeight>0.");
-    Long64_t nmm = fChain->GetEntries("theWeight<0.");
-    std::cout << "numberofnp:" << npp << "  numberofnm:" << nmm << std::endl;
+    //Long64_t npp = fChain->GetEntries("theWeight>0.");
+    //Long64_t nmm = fChain->GetEntries("theWeight<0.");
+    //std::cout << "numberofnp:" << npp << "  numberofnm:" << nmm << std::endl;
 
     TFile* input1 = new TFile("puweight.root");
     TH1*   h      = NULL;
@@ -59,6 +59,9 @@ void makesmall::Loop() {
         if (m_dataset == "outWJets.root") {
             scalef = 1000. * 61526.7 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
+        if (m_dataset == "outf_WJets.root") {
+            scalef = 1000. * 61526.7 / float(npp - nmm) * fabs(theWeight) / theWeight;
+        }
         if (m_dataset == "outZJets.root") {
             scalef = 1000. * 5765.4 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
@@ -70,7 +73,7 @@ void makesmall::Loop() {
         }
         if (m_dataset == "outTTJets.root") {
             scalef = 1000. * 831.76 / float(npp - nmm) * fabs(theWeight) / theWeight;
-        }
+      }
         if (m_dataset == "outSTs.root") {
             scalef = 1000. * 3.36 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
@@ -107,6 +110,18 @@ void makesmall::Loop() {
         if (m_dataset == "outDY4.root") {
             scalef = 1000. * 51.4 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
+        if (m_dataset == "outf_DY1.root") {
+            scalef = 1000. * 1016 / float(npp - nmm) * fabs(theWeight) / theWeight;
+        }
+        if (m_dataset == "outf_DY2.root") {
+            scalef = 1000. * 331.4 / float(npp - nmm) * fabs(theWeight) / theWeight;
+        }
+        if (m_dataset == "outf_DY3.root") {
+            scalef = 1000. * 96.36 / float(npp - nmm) * fabs(theWeight) / theWeight;
+        }
+        if (m_dataset == "outf_DY4.root") {
+            scalef = 1000. * 51.4 / float(npp - nmm) * fabs(theWeight) / theWeight;
+        }
         if (m_dataset == "outW3Jets.root") {
             scalef = 1000. * 942.3 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
@@ -125,7 +140,7 @@ void makesmall::Loop() {
             //////////////////photon electron veto scalefactor
             if (photonet > 10 && photonet < 200) {
                 if (fabs(photoneta) > 0 && fabs(photoneta) < 1.4442) {
-                    scalef = scalef * 0.9978;
+                   scalef = scalef * 0.9978;
                 }
                 if (fabs(photoneta) > 1.566 && fabs(photoneta) < 2.5) {
                     scalef = scalef * 0.9931;
@@ -2319,10 +2334,10 @@ void makesmall::Loop() {
             }
         }
         // be careful to put selections here
-        if (ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et > 20) {
-            ExTree->Fill();
-        }
-        // ExTree->Fill();
+        //if (ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et > 20) {
+        //    ExTree->Fill();
+        //}
+         ExTree->Fill();
     }
 
     input1->Close();

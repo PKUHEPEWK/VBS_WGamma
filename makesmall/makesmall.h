@@ -40,7 +40,7 @@ public:
     const Int_t kMaxpassFilter_EEBadSc          = 1;
     const Int_t kMaxpassFilter_badMuon          = 1;
     const Int_t kMaxpassFilter_badChargedHadron = 1;
-
+    Double_t theweight;
     // Declaration of leaf types
     Float_t  rawPt;
     Int_t    nevent;
@@ -48,8 +48,8 @@ public:
     Int_t    ls;
     Int_t    nVtx;
     Double_t theWeight;
-    Double_t nump;
-    Double_t numm;
+    Double_t npp;
+    Double_t nmm;
     Double_t npT;
     Int_t    lep;
     Double_t ptVlep;
@@ -95,6 +95,8 @@ public:
     Double_t photon_drla[6];
     Double_t photon_mla[6];
     Double_t photon_mva[6];
+    Double_t photonsc_eta[6];
+    Double_t photonsc_phi[6];
     Bool_t   passEleVeto;
     Bool_t   passEleVetonew;
     Bool_t   passPixelSeedVeto;
@@ -217,16 +219,26 @@ public:
     Int_t    muon1_trackerLayers;
     Double_t matchedgenMu1_pt;
     //for muon rochester correction
+    Double_t photonsceta;
+    Double_t photonscphi;
+    Double_t photonsceta_f;
+    Double_t photonscphi_f;
 
     // List of branches
+    TBranch* b_photonsc_eta;
+    TBranch* b_photonsc_phi;
+    TBranch* b_photonsceta;
+    TBranch* b_photonscphi;
+    TBranch* b_photonsceta_f;
+    TBranch* b_photonscphi_f;
     TBranch* b_rawPt;                         //!
     TBranch* b_nevent;                        //!
     TBranch* b_run;                           //!
     TBranch* b_ls;                            //!
     TBranch* b_nVtx;                          //!
     TBranch* b_theWeight;                     //!
-    TBranch* b_nump;                          //!
-    TBranch* b_numm;                          //!
+    //TBranch* b_nump;                          //!
+    //TBranch* b_numm;                          //!
     TBranch* b_npT;                           //!
     TBranch* b_lep;                           //!
     TBranch* b_ptVlep;                        //!
@@ -396,7 +408,7 @@ public:
     //for muon rochester correction
 
     TString m_dataset;
-    makesmall(TTree* tree = 0, TString dataset = "");
+    makesmall(TTree* tree = 0,Double_t nump=0, Double_t numm=0,TString dataset = "");
     virtual ~makesmall();
     virtual Int_t    Cut(Long64_t entry);
     virtual Int_t    GetEntry(Long64_t entry);
@@ -425,7 +437,7 @@ public:
 #endif
 
 #ifdef makesmall_cxx
-makesmall::makesmall(TTree* tree, TString dataset)
+makesmall::makesmall(TTree* tree,Double_t nump,Double_t numm, TString dataset)
     : fChain(0) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
@@ -438,6 +450,8 @@ makesmall::makesmall(TTree* tree, TString dataset)
         dir->GetObject("PKUCandidates", tree);
     }
     // Jie
+    npp=nump;
+    nmm=numm;
     m_dataset = dataset;
     fout      = TFile::Open(m_dataset, "RECREATE");
     ExTree    = new TTree("demo", "demo");
@@ -493,13 +507,13 @@ void makesmall::Init(TTree* tree) {
     fChain->SetMakeClass(1);
     ExTree->Branch("scalef", &scalef, "scalef/D");
     //ExTree->Branch("rawPt", &rawPt, "rawPt/F");
-    //ExTree->Branch("nevent", &nevent, "nevent/I");
-    //ExTree->Branch("run", &run, "run/I");
-    //ExTree->Branch("ls", &ls, "ls/I");
+    ExTree->Branch("nevent", &nevent, "nevent/I");
+    ExTree->Branch("run", &run, "run/I");
+    ExTree->Branch("ls", &ls, "ls/I");
     ExTree->Branch("nVtx", &nVtx, "nVtx/I");
     ExTree->Branch("theWeight", &theWeight, "theWeight/D");
-    ExTree->Branch("nump", &nump, "nump/D");
-    ExTree->Branch("numm", &numm, "numm/D");
+    //ExTree->Branch("nump", &nump, "nump/D");
+    //ExTree->Branch("numm", &numm, "numm/D");
     ExTree->Branch("npT", &npT, "npT/D");
     ExTree->Branch("lep", &lep, "lep/I");
     //ExTree->Branch("ptVlep", &ptVlep, "ptVlep/D");
@@ -527,7 +541,7 @@ void makesmall::Init(TTree* tree) {
     //ExTree->Branch("photon_e", photon_e, "photon_e[6]/D");
     //ExTree->Branch("photon_pev", photon_pev, "photon_pev[6]/O");
     //ExTree->Branch("photon_pevnew", photon_pevnew, "photon_pevnew[6]/O");
-    //ExTree->Branch("photon_ppsv", photon_ppsv, "photon_ppsv[6]/O");
+    ExTree->Branch("photon_ppsv", photon_ppsv, "photon_ppsv[6]/O");
     //ExTree->Branch("photon_iseb", photon_iseb, "photon_iseb[6]/O");
     //ExTree->Branch("photon_isee", photon_isee, "photon_isee[6]/O");
     ExTree->Branch("photon_hoe", photon_hoe, "photon_hoe[6]/D");
@@ -535,11 +549,14 @@ void makesmall::Init(TTree* tree) {
     ExTree->Branch("photon_sieie2", photon_sieie2, "photon_sieie2[6]/D");
     ExTree->Branch("photon_chiso", photon_chiso, "photon_chiso[6]/D");
     ExTree->Branch("photon_nhiso", photon_nhiso, "photon_nhiso[6]/D");
+    gStyle->SetOptStat(0);
     ExTree->Branch("photon_phoiso", photon_phoiso, "photon_phoiso[6]/D");
     ///ExTree->Branch("photon_istrue", photon_istrue, "photon_istrue[6]/I");
     ExTree->Branch("photon_isprompt", photon_isprompt, "photon_isprompt[6]/I");
     ExTree->Branch("photon_drla", photon_drla, "photon_drla[6]/D");
-    //ExTree->Branch("photon_mla", photon_mla, "photon_mla[6]/D");
+    ExTree->Branch("photon_mla", photon_mla, "photon_mla[6]/D");
+    ExTree->Branch("photonsc_eta", photonsc_eta, "photonsc_eta[6]/D");
+    ExTree->Branch("photonsc_phi", photonsc_phi, "photonsc_phi[6]/D");
     //ExTree->Branch("photon_mva", photon_mva, "photon_mva[6]/D");
     //ExTree->Branch("passEleVeto", &passEleVeto, "passEleVeto/O");
     //ExTree->Branch("passEleVetonew", &passEleVetonew, "passEleVetonew/O");
@@ -587,6 +604,8 @@ void makesmall::Init(TTree* tree) {
     ExTree->Branch("matchedgenMu1_pt", &matchedgenMu1_pt, "matchedgenMu1_pt/D");
     if (use_f) {
         // branch have corresponding _f branch
+        ExTree->Branch("photonsceta",&photonsceta_f,"photonsceta/D");
+        ExTree->Branch("photonscphi",&photonscphi_f,"photonscphi/D");
         ExTree->Branch("Mla", &Mla_f, "Mla/D");
         //ExTree->Branch("Mva", &Mva_f, "Mva/D");
         ExTree->Branch("photonhaspixelseed", &photonhaspixelseed_f, "photonhaspixelseed/O");
@@ -630,6 +649,8 @@ void makesmall::Init(TTree* tree) {
     }
     else {
         // branch have corresponding _f branch
+        ExTree->Branch("photonsceta",&photonsceta,"photonsceta/D");
+        ExTree->Branch("photonscphi",&photonscphi,"photonscphi/D");
         ExTree->Branch("Mla", &Mla, "Mla/D");
         //ExTree->Branch("Mva", &Mva, "Mva/D");
         ExTree->Branch("photonhaspixelseed", &photonhaspixelseed, "photonhaspixelseed/O");
@@ -678,8 +699,8 @@ void makesmall::Init(TTree* tree) {
     fChain->SetBranchAddress("ls", &ls, &b_ls);
     fChain->SetBranchAddress("nVtx", &nVtx, &b_nVtx);
     fChain->SetBranchAddress("theWeight", &theWeight, &b_theWeight);
-    fChain->SetBranchAddress("nump", &nump, &b_nump);
-    fChain->SetBranchAddress("numm", &numm, &b_numm);
+    //fChain->SetBranchAddress("nump", &nump, &b_nump);
+    //fChain->SetBranchAddress("numm", &numm, &b_numm);
     fChain->SetBranchAddress("npT", &npT, &b_npT);
     fChain->SetBranchAddress("lep", &lep, &b_lep);
     fChain->SetBranchAddress("ptVlep", &ptVlep, &b_ptVlep);
@@ -725,6 +746,8 @@ void makesmall::Init(TTree* tree) {
     fChain->SetBranchAddress("photon_drla", photon_drla, &b_photon_drla);
     fChain->SetBranchAddress("photon_mla", photon_mla, &b_photon_mla);
     fChain->SetBranchAddress("photon_mva", photon_mva, &b_photon_mva);
+    fChain->SetBranchAddress("photonsc_eta",photonsc_eta,&b_photonsc_eta);
+    fChain->SetBranchAddress("photonsc_phi",photonsc_phi,&b_photonsc_phi);
     fChain->SetBranchAddress("passEleVeto", &passEleVeto, &b_passEleVeto);
     fChain->SetBranchAddress("passEleVetonew", &passEleVetonew, &b_passEleVetonew);
     fChain->SetBranchAddress("passPixelSeedVeto", &passPixelSeedVeto, &b_passPixelSeedVeto);
@@ -845,6 +868,10 @@ void makesmall::Init(TTree* tree) {
     fChain->SetBranchAddress("lep1_sign", &lep1_sign, &b_lep1_sign);
     fChain->SetBranchAddress("muon1_trackerLayers", &muon1_trackerLayers, &b_muon1_trackerLayers);
     fChain->SetBranchAddress("matchedgenMu1_pt", &matchedgenMu1_pt, &b_matchedgenMu1_pt);
+    fChain->SetBranchAddress("photonsceta",&photonsceta,&b_photonsceta);
+    fChain->SetBranchAddress("photonscphi",&photonscphi,&b_photonscphi);
+    fChain->SetBranchAddress("photonsceta_f",&photonsceta_f,&b_photonsceta_f);
+    fChain->SetBranchAddress("photonscphi_f",&photonscphi_f,&b_photonscphi_f);
     Notify();
 }
 
@@ -933,7 +960,7 @@ Double_t makesmall::ceff(Double_t x)  // befficiency   x=pt
 }
 Double_t makesmall::leff(Double_t x)  // befficiency   x=pt
 {
-    if (x >= 20 && x < 200)
+    if(x >= 20 && x < 200)
         return 0.0111077;
     if (x >= 200 && x < 500)
         return 0.0171203;
