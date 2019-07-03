@@ -31,8 +31,8 @@ void makesmall::Loop() {
 
     Long64_t nentries = fChain->GetEntriesFast();
 
-    //Long64_t npp = fChain->GetEntries("theWeight>0.");
-    //Long64_t nmm = fChain->GetEntries("theWeight<0.");
+    Long64_t npp = fChain->GetEntries("theWeight>0.");
+    Long64_t nmm = fChain->GetEntries("theWeight<0.");
     //std::cout << "numberofnp:" << npp << "  numberofnm:" << nmm << std::endl;
 
     TFile* input1 = new TFile("puweight.root");
@@ -73,7 +73,7 @@ void makesmall::Loop() {
         }
         if (m_dataset == "outTTJets.root") {
             scalef = 1000. * 831.76 / float(npp - nmm) * fabs(theWeight) / theWeight;
-      }
+        }
         if (m_dataset == "outSTs.root") {
             scalef = 1000. * 3.36 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
@@ -132,7 +132,7 @@ void makesmall::Loop() {
             scalef = 1000. * 405.271 / float(npp - nmm) * fabs(theWeight) / theWeight;
         }
 
-        if (!m_dataset.Contains("outSMu") && !m_dataset.Contains("outSEle") && !m_dataset.Contains("fake")) {
+        if (!m_dataset.Contains("outSMu") && !m_dataset.Contains("outSEle") && !m_dataset.Contains("fake") && !m_dataset.Contains("loose_muon")) {
             pileupWeight    = h->GetBinContent(h->GetXaxis()->FindBin(npT));
             scale_btag_up   = 1.0;
             scale_btag_down = 1.0;
@@ -140,7 +140,7 @@ void makesmall::Loop() {
             //////////////////photon electron veto scalefactor
             if (photonet > 10 && photonet < 200) {
                 if (fabs(photoneta) > 0 && fabs(photoneta) < 1.4442) {
-                   scalef = scalef * 0.9978;
+                    scalef = scalef * 0.9978;
                 }
                 if (fabs(photoneta) > 1.566 && fabs(photoneta) < 2.5) {
                     scalef = scalef * 0.9931;
@@ -2337,7 +2337,7 @@ void makesmall::Loop() {
         //if (ptlep1 > 25. && abs(etalep1) < 2.5 && MET_et > 20) {
         //    ExTree->Fill();
         //}
-         ExTree->Fill();
+        ExTree->Fill();
     }
 
     input1->Close();
